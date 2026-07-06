@@ -1,0 +1,793 @@
+/* ============================================================
+   EduTrack - Global Stylesheet
+   Loaded once via base.html: {% static 'css/style.css' %}
+   ============================================================ */
+
+:root {
+  --et-primary: #2F5CE0;
+  --et-primary-dark: #23409E;
+  --et-primary-light: #EAF0FF;
+  --et-bg: #F3F5FA;
+  --et-text: #1E2433;
+  --et-muted: #7A8299;
+  --et-border: #E7EAF3;
+  --et-radius: 14px;
+  --et-shadow: 0 4px 18px rgba(30, 41, 59, 0.06);
+  --et-shadow-hover: 0 10px 28px rgba(47, 92, 224, 0.14);
+}
+
+body {
+  background-color: var(--et-bg);
+  font-family: 'Poppins', sans-serif;
+  color: var(--et-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ---------------- Top Navbar ---------------- */
+.et-navbar {
+  background-color: #ffffff;
+  box-shadow: var(--et-shadow);
+  padding: 0.6rem 1.25rem;
+  z-index: 1030;
+}
+
+.et-brand {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--et-primary-dark);
+  letter-spacing: 0.3px;
+}
+
+.et-navbar .nav-link {
+  color: var(--et-text);
+  font-weight: 500;
+  font-size: 0.92rem;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.et-navbar .nav-link:hover,
+.et-navbar .nav-link.active {
+  color: var(--et-primary);
+  background-color: var(--et-primary-light);
+}
+
+.et-navbar .dropdown-toggle::after {
+  display: none;
+}
+
+.et-avatar-sm {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--et-primary-light);
+}
+
+/* ---------------- Sidebar ---------------- */
+.et-sidebar {
+  background-color: #ffffff;
+  min-height: calc(100vh - 68px);
+  box-shadow: var(--et-shadow);
+  padding: 1.25rem 0.85rem;
+  border-radius: var(--et-radius);
+}
+
+.et-sidebar .nav-link {
+  color: var(--et-muted);
+  font-weight: 500;
+  font-size: 0.93rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.et-sidebar .nav-link i {
+  font-size: 1.05rem;
+  width: 20px;
+  text-align: center;
+}
+
+.et-sidebar .nav-link:hover {
+  background-color: var(--et-primary-light);
+  color: var(--et-primary-dark);
+}
+
+.et-sidebar .nav-link.active {
+  background-color: var(--et-primary);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(47, 92, 224, 0.25);
+}
+
+.et-sidebar hr {
+  border-color: var(--et-border);
+  margin: 0.75rem 0;
+}
+
+/* ---------------- Cards ---------------- */
+.et-card {
+  background-color: #fff;
+  border: 1px solid var(--et-border);
+  border-radius: var(--et-radius);
+  box-shadow: var(--et-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.et-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--et-shadow-hover);
+}
+
+.stat-card .stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background-color: var(--et-primary-light);
+  color: var(--et-primary);
+}
+
+.stat-card .stat-number {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--et-text);
+  line-height: 1.1;
+}
+
+.stat-card .stat-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--et-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.stat-card .stat-sub {
+  font-size: 0.8rem;
+  color: var(--et-muted);
+}
+
+.stat-card .stat-sub i {
+  color: #2CB673;
+}
+
+/* ---------------- Section titles / links ---------------- */
+.et-section-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--et-text);
+}
+
+.et-link-sm {
+  font-size: 0.85rem;
+  color: var(--et-primary);
+  text-decoration: none;
+}
+
+.et-link-sm:hover {
+  text-decoration: underline;
+}
+
+/* ---------------- Table ---------------- */
+.et-table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--et-muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--et-border);
+  background-color: #FBFCFE;
+  white-space: nowrap;
+}
+
+.et-table tbody td {
+  font-size: 0.9rem;
+  vertical-align: middle;
+  color: var(--et-text);
+  border-bottom: 1px solid var(--et-border);
+}
+
+.et-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.et-table tbody tr:hover {
+  background-color: var(--et-primary-light);
+}
+
+.student-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--et-primary-light);
+  color: var(--et-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.badge-status {
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.4em 0.7em;
+  border-radius: 20px;
+}
+
+/* ---------------- Quick actions ---------------- */
+.quick-action-btn {
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.65rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------------- Profile card ---------------- */
+.profile-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--et-primary-light);
+}
+
+.et-last-login {
+  font-size: 0.8rem;
+  color: var(--et-muted);
+}
+
+/* ---------------- Department overview ---------------- */
+.et-dept-list {
+  font-size: 0.85rem;
+}
+
+/* ---------------- Footer ---------------- */
+.et-footer {
+  color: var(--et-muted);
+  font-size: 0.85rem;
+  padding: 1.25rem 0;
+  text-align: center;
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 991.98px) {
+  .et-sidebar {
+    margin-bottom: 1rem;
+  }
+}
+
+/* ================================================================
+   EDUTRACK - GLOBAL STYLESHEET
+   Loaded once via base.html: {% static 'css/style.css' %}
+   Theme: Modern Blue & White | Font: Poppins
+   ================================================================ */
+
+
+/* ================================================================
+   1. ROOT VARIABLES / DESIGN TOKENS
+   ================================================================ */
+:root {
+  --et-primary: #2F5CE0;
+  --et-primary-dark: #23409E;
+  --et-primary-light: #EAF0FF;
+  --et-secondary: #7A8299;
+  --et-success: #2CB673;
+  --et-bg: #F3F5FA;
+  --et-surface: #FFFFFF;
+  --et-text: #1E2433;
+  --et-muted: #7A8299;
+  --et-border: #E7EAF3;
+
+  --et-radius-sm: 8px;
+  --et-radius: 14px;
+  --et-radius-lg: 20px;
+
+  --et-shadow: 0 4px 18px rgba(30, 41, 59, 0.06);
+  --et-shadow-hover: 0 10px 28px rgba(47, 92, 224, 0.14);
+
+  --et-transition: all 0.2s ease;
+}
+
+
+/* ================================================================
+   2. BASE / TYPOGRAPHY
+   ================================================================ */
+body {
+  background-color: var(--et-bg);
+  font-family: 'Poppins', sans-serif;
+  color: var(--et-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: var(--et-text);
+}
+
+p {
+  color: var(--et-text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--et-primary);
+}
+
+a:hover {
+  color: var(--et-primary-dark);
+}
+
+
+/* ================================================================
+   3. NAVBAR
+   ================================================================ */
+.et-navbar {
+  background-color: var(--et-surface);
+  box-shadow: var(--et-shadow);
+  padding: 0.6rem 1.25rem;
+  z-index: 1030;
+}
+
+.et-brand {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--et-primary-dark);
+  letter-spacing: 0.3px;
+}
+
+.et-navbar .nav-link {
+  color: var(--et-text);
+  font-weight: 500;
+  font-size: 0.92rem;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: var(--et-radius-sm);
+  transition: var(--et-transition);
+}
+
+.et-navbar .nav-link:hover,
+.et-navbar .nav-link.active {
+  color: var(--et-primary);
+  background-color: var(--et-primary-light);
+}
+
+.et-navbar .dropdown-toggle::after {
+  display: none;
+}
+
+.et-avatar-sm {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--et-primary-light);
+}
+
+
+/* ================================================================
+   4. SIDEBAR
+   ================================================================ */
+.et-sidebar {
+  background-color: var(--et-surface);
+  min-height: calc(100vh - 68px);
+  box-shadow: var(--et-shadow);
+  padding: 1.25rem 0.85rem;
+  border-radius: var(--et-radius);
+}
+
+.et-sidebar .nav-link {
+  color: var(--et-muted);
+  font-weight: 500;
+  font-size: 0.93rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: var(--et-transition);
+}
+
+.et-sidebar .nav-link i {
+  font-size: 1.05rem;
+  width: 20px;
+  text-align: center;
+}
+
+.et-sidebar .nav-link:hover {
+  background-color: var(--et-primary-light);
+  color: var(--et-primary-dark);
+}
+
+.et-sidebar .nav-link.active {
+  background-color: var(--et-primary);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(47, 92, 224, 0.25);
+}
+
+.et-sidebar hr {
+  border-color: var(--et-border);
+  margin: 0.75rem 0;
+}
+
+
+/* ================================================================
+   5. FOOTER
+   ================================================================ */
+.et-footer {
+  background-color: transparent;
+  color: var(--et-muted);
+  font-size: 0.85rem;
+  padding: 1.25rem 0;
+  text-align: center;
+  border-top: 1px solid var(--et-border);
+  margin-top: 1rem;
+}
+
+
+/* ================================================================
+   6. GENERIC CARD (dashboard cards, panels, etc.)
+   ================================================================ */
+.et-card {
+  background-color: var(--et-surface);
+  border: 1px solid var(--et-border);
+  border-radius: var(--et-radius);
+  box-shadow: var(--et-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.et-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--et-shadow-hover);
+}
+
+
+/* ---------------- Statistic cards ---------------- */
+.stat-card .stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background-color: var(--et-primary-light);
+  color: var(--et-primary);
+}
+
+.stat-card .stat-number {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--et-text);
+  line-height: 1.1;
+}
+
+.stat-card .stat-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--et-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.stat-card .stat-sub {
+  font-size: 0.8rem;
+  color: var(--et-muted);
+}
+
+.stat-card .stat-sub i {
+  color: var(--et-success);
+}
+
+
+/* ---------------- Section titles / links ---------------- */
+.et-section-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--et-text);
+}
+
+.et-link-sm {
+  font-size: 0.85rem;
+  color: var(--et-primary);
+  text-decoration: none;
+}
+
+.et-link-sm:hover {
+  text-decoration: underline;
+}
+
+
+/* ---------------- Profile card ---------------- */
+.profile-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--et-primary-light);
+}
+
+.et-last-login {
+  font-size: 0.8rem;
+  color: var(--et-muted);
+}
+
+.et-dept-list {
+  font-size: 0.85rem;
+}
+
+
+/* ================================================================
+   7. TABLES
+   ================================================================ */
+.et-table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--et-muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--et-border);
+  background-color: #FBFCFE;
+  white-space: nowrap;
+}
+
+.et-table tbody td {
+  font-size: 0.9rem;
+  vertical-align: middle;
+  color: var(--et-text);
+  border-bottom: 1px solid var(--et-border);
+}
+
+.et-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.et-table tbody tr:hover {
+  background-color: var(--et-primary-light);
+}
+
+.student-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--et-primary-light);
+  color: var(--et-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.badge-status {
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.4em 0.7em;
+  border-radius: 20px;
+}
+
+
+/* ================================================================
+   8. BUTTONS
+   ================================================================ */
+.btn {
+  border-radius: 10px;
+  font-weight: 500;
+  transition: var(--et-transition);
+}
+
+.btn-primary {
+  background-color: var(--et-primary);
+  border-color: var(--et-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--et-primary-dark);
+  border-color: var(--et-primary-dark);
+  transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+  color: var(--et-primary);
+  border-color: var(--et-primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--et-primary);
+  border-color: var(--et-primary);
+  transform: translateY(-2px);
+}
+
+.quick-action-btn {
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.65rem 1rem;
+  transition: var(--et-transition);
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+}
+
+
+/* ================================================================
+   9. HERO SECTION (home.html)
+   ================================================================ */
+.hero-section {
+  background: linear-gradient(135deg, var(--et-primary-light) 0%, #FFFFFF 100%);
+  border: 1px solid var(--et-border);
+  box-shadow: var(--et-shadow);
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--et-primary-dark);
+  letter-spacing: 0.5px;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--et-primary);
+}
+
+.hero-description {
+  font-size: 1rem;
+  color: var(--et-muted);
+  max-width: 640px;
+}
+
+.hero-btn {
+  border-radius: 10px;
+  min-width: 160px;
+  transition: var(--et-transition);
+}
+
+.hero-btn:hover {
+  transform: translateY(-2px);
+}
+
+
+/* ================================================================
+   10. FEATURE CARDS (home.html)
+   ================================================================ */
+.section-title {
+  font-weight: 700;
+  color: var(--et-text);
+  position: relative;
+}
+
+.feature-card {
+  background-color: var(--et-surface);
+  border: 1px solid var(--et-border);
+  border-radius: var(--et-radius);
+  box-shadow: var(--et-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--et-shadow-hover);
+}
+
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  background-color: var(--et-primary-light);
+  color: var(--et-primary);
+}
+
+.feature-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.feature-text {
+  font-size: 0.9rem;
+  color: var(--et-muted);
+}
+
+
+/* ================================================================
+   11. WHY CHOOSE SECTION (home.html)
+   ================================================================ */
+.why-choose-section {
+  background-color: var(--et-surface);
+  border: 1px solid var(--et-border);
+  box-shadow: var(--et-shadow);
+}
+
+.highlight-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  background-color: var(--et-primary-light);
+  color: var(--et-primary-dark);
+}
+
+
+/* ================================================================
+   12. CALL TO ACTION SECTION (home.html)
+   ================================================================ */
+.cta-section {
+  background: linear-gradient(135deg, var(--et-primary) 0%, var(--et-primary-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--et-shadow-hover);
+}
+
+.cta-section h2 {
+  color: #FFFFFF;
+}
+
+.cta-section p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.cta-btn {
+  border-radius: 10px;
+  min-width: 160px;
+  font-weight: 600;
+  transition: var(--et-transition);
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+}
+
+
+/* ================================================================
+   13. RESPONSIVE ADJUSTMENTS
+   ================================================================ */
+@media (max-width: 991.98px) {
+  .et-sidebar {
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-size: 2.25rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .hero-title {
+    font-size: 1.9rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem;
+  }
+
+  .hero-btn,
+  .cta-btn {
+    width: 100%;
+  }
+}
