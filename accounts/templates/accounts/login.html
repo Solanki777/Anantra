@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+    <!-- ============================================================ -->
+    <!-- LOGIN PAGE WRAPPER -->
+    <!-- ============================================================ -->
+    <section class="auth-wrapper d-flex justify-content-center align-items-center">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+
+            <!-- ==================== LOGIN CARD ==================== -->
+            <article class="auth-card p-4 p-lg-5">
+
+                <!-- Logo / Icon -->
+                <div class="text-center mb-3">
+                    <span class="auth-logo">🎓 EduTrack</span>
+                </div>
+
+                <!-- Title & Subtitle -->
+                <header class="text-center mb-4">
+                    <h1 class="auth-title h4 mb-1">Welcome Back</h1>
+                    <p class="auth-subtitle mb-0">
+                        Sign in to continue to the Student Management System.
+                    </p>
+                </header>
+
+                <!-- ==================== DJANGO MESSAGES ==================== -->
+                {% if messages %}
+                    <div class="mb-3">
+                        {% for message in messages %}
+                            <div class="alert
+                                        {% if message.tags == 'success' %}alert-success
+                                        {% elif message.tags == 'warning' %}alert-warning
+                                        {% elif message.tags == 'error' or message.tags == 'danger' %}alert-danger
+                                        {% else %}alert-info{% endif %}
+                                        alert-dismissible fade show"
+                                 role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- ==================== NON-FIELD ERRORS ==================== -->
+            
+
+                <!-- ==================== LOGIN FORM ==================== -->
+                <form method="POST" novalidate aria-label="Login form">
+                    {% csrf_token %}
+
+                    <!-- Username Field -->
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">
+                            Username
+                        </label>
+                        <input type="text"
+                               name="username"
+                               id="id_username"
+                               class="form-control"
+                               placeholder="Enter your username"
+                               value=""
+                               autocomplete="username"
+                               required
+                               autofocus>
+                        
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label|default:'id_password' }}" class="form-label">
+                            Password
+                        </label>
+                        <input type="password"
+                               name="password"
+                               id="id_password"
+                               class="form-control"
+                               placeholder="Enter your password"
+                               autocomplete="current-password"
+                               required>
+    
+                    </div>
+
+                    <!-- Primary Action -->
+                    <button type="submit" class="btn btn-primary w-100 auth-btn mb-3">
+                        Login
+                    </button>
+
+                    <!-- Secondary Link -->
+                    <p class="text-center mb-0 auth-footer-text">
+                        Don't have an account?
+                        <a href="{% url 'register' %}">Register</a>
+                    </p>
+                </form>
+
+            </article>
+
+        </div>
+    </section>
+
+{% endblock %}
