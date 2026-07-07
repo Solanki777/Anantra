@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from django.contrib.auth import authenticate,login ,logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 def register_view(request):
@@ -45,7 +46,7 @@ def login_view(request):
         
     return render(request, "accounts/login.html")
 
-
+@login_required
 def logout_view(request):
     logout(request)
 
