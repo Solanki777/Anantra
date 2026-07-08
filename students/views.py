@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import StudentForm
 
 # Create your views here.
 def home(request):
@@ -9,3 +11,27 @@ def home(request):
 @login_required
 def dashboard(request):
     return render(request , "students/dashboard.html")
+
+@login_required
+def add_student(request):
+
+    if request.method == "POST":
+        form = StudentForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request,
+                "Student added successfully."
+            )
+            return redirect("student_list")
+    else:
+        form = StudentForm()
+        return render(
+            request,
+            "students/add_student.html",
+            {
+                "form":form
+            }
+        )
