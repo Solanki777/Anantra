@@ -81,9 +81,9 @@
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-2">
                                             <!-- Edit Button (UI only) -->
-                                            <a href="#"
+                                            <a href="{% url 'edit_student' student.id %}"
                                                class="btn btn-sm btn-warning"
-                                               aria-label="Edit {{ student.name }}">
+                                               aria-label="Edit {{ students.name }}">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             <!-- Delete Button (UI only) -->

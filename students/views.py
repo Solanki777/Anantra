@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import StudentForm
 from .models import Student
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 def home(request):
@@ -49,3 +50,34 @@ def student_list(request):
         }
 
                 )
+
+@login_required
+def edit_student(request, id):
+    
+    student = get_object_or_404(Student, id=id)
+
+    if request.method == "POST":
+
+        form =StudentForm(request.POST , instance=student)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request,
+                "Student Updated Successfully."
+            )
+
+            return redirect("student_list")
+    
+    else:
+        form = StudentForm(instance=student)
+    
+    return render(
+        request,
+        "students/add_student.html",
+        {
+            "form":form,
+            "student" : student,
+        },
+    )
