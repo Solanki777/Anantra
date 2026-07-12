@@ -51,12 +51,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'student_list' %}">
                             <i class="bi bi-people me-1"></i>Students
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'add_student' %}">
                             <i class="bi bi-person-plus me-1"></i>Add Student
                         </a>
                     </li>
@@ -118,13 +118,13 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% block sidebar_students %}{% endblock %}"
-                               href="#">
+                               href="{% url 'student_list' %}">
                                 <i class="bi bi-people"></i>Students
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% block sidebar_add_student %}{% endblock %}"
-                               href="#">
+                               href="{% url 'add_student' %}">
                                 <i class="bi bi-person-plus"></i>Add Student
                             </a>
                         </li>

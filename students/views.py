@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import StudentForm
-from django.db import models
+from .models import Student
 
 # Create your views here.
 def home(request):
@@ -39,7 +39,7 @@ def add_student(request):
 
 @login_required
 def student_list(request):
-    students = Student.Objects.all()
+    students = Student.objects.all()
 
     return render(
         request,
