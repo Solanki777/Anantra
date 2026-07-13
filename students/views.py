@@ -6,6 +6,7 @@ from .forms import StudentForm
 from .models import Student
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 # Create your views here.
 def home(request):
@@ -77,11 +78,19 @@ def student_list(request):
             Q(department__icontains=search) 
         )
 
+    paginator = Paginator(students,5)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+
+
     return render(
         request,
         "students/student_list.html",
         {
-            "students": students
+            "page_obj" : page_obj,
+            "students": students,
         }
 
                 )
