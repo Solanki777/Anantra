@@ -81,3 +81,24 @@ def edit_student(request, id):
             "student" : student,
         },
     )
+
+@login_required
+def delete_student(request, id):
+    student = get_object_or_404(Student, id=id)
+
+    if request.method == "POST":
+        student.delete()
+
+        messages.success(
+            request,
+            "Student deleted successfully")
+        
+        return redirect("student_list")
+    
+    return render(
+        request,
+        "students/delete_studente.html",
+        {
+            "student" : student
+        }
+    )

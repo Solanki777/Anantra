@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Delete Student{% endblock %}
+
+{% block sidebar_students %}active{% endblock %}
+
+{% block content %}
+
+    <!-- ============================================================ -->
+    <!-- PAGE HEADER -->
+    <!-- ============================================================ -->
+    <section class="mb-4">
+        <div class="et-card p-3 p-lg-4 text-center">
+            <span class="auth-logo d-block mb-2">🎓 EduTrack</span>
+            <h1 class="auth-title h4 mb-1">Delete Student</h1>
+            <p class="auth-subtitle mb-0">
+                Please review the student information before permanently deleting the record.
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- DELETE CONFIRMATION CARD -->
+    <!-- ============================================================ -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8 col-xl-7">
+            <article class="et-card p-4 p-lg-5">
+
+                <!-- ==================== DJANGO MESSAGES ==================== -->
+                {% if messages %}
+                    <div class="mb-3">
+                        {% for message in messages %}
+                            <div class="alert
+                                        {% if message.tags == 'success' %}alert-success
+                                        {% elif message.tags == 'warning' %}alert-warning
+                                        {% elif message.tags == 'error' or message.tags == 'danger' %}alert-danger
+                                        {% else %}alert-info{% endif %}
+                                        alert-dismissible fade show"
+                                 role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- ==================== WARNING MESSAGE ==================== -->
+                <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill fs-5 mt-1"></i>
+                    <div>
+                        <strong>Warning!</strong>
+                        This action will permanently delete the selected student record.
+                        This action cannot be undone.
+                    </div>
+                </div>
+
+                <!-- ==================== STUDENT DETAILS ==================== -->
+                <div class="mb-4">
+                    <h2 class="et-section-title mb-3">Student Details</h2>
+
+                    <ul class="list-group list-group-flush et-detail-list">
+                        <li class="list-group-item d-flex justify-content-between flex-wrap">
+                            <span class="et-detail-label">Student Name</span>
+                            <span class="et-detail-value">{{ student.name }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between flex-wrap">
+                            <span class="et-detail-label">Email</span>
+                            <span class="et-detail-value">{{ student.email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between flex-wrap">
+                            <span class="et-detail-label">Mobile</span>
+                            <span class="et-detail-value">{{ student.mobile }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between flex-wrap">
+                            <span class="et-detail-label">Course</span>
+                            <span class="et-detail-value">{{ student.course }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between flex-wrap">
+                            <span class="et-detail-label">Department</span>
+                            <span class="et-detail-value">{{ student.department }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between flex-wrap">
+                            <span class="et-detail-label">Admission Date</span>
+                            <span class="et-detail-value">{{ student.admission_date|date:"d M Y" }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- ==================== CONFIRMATION FORM ==================== -->
+                <form method="POST" aria-label="Delete student confirmation form">
+                    {% csrf_token %}
+
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <button type="submit" class="btn btn-danger w-100 auth-btn">
+                                <i class="bi bi-trash me-1"></i> Delete Student
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <a href="{% url 'student_list' %}" class="btn btn-secondary w-100 auth-btn">
+                                <i class="bi bi-arrow-left me-1"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+            </article>
+        </div>
+    </div>
+
+{% endblock %}

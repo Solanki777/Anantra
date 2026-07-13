@@ -87,7 +87,7 @@
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             <!-- Delete Button (UI only) -->
-                                            <a href="#"
+                                            <a href="{% url 'delete_student' student.id %}"
                                                class="btn btn-sm btn-danger"
                                                aria-label="Delete {{ student.name }}">
                                                 <i class="bi bi-trash"></i>

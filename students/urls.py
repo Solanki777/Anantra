@@ -10,5 +10,10 @@ urlpatterns=[
         "edit/<int:id>/",
         views.edit_student,
         name="edit_student"
-    )
+    ),
+    path(
+        "delete/<int:id>/",
+        views.delete_student,
+        name ="delete_student"
+    ),
 ]
