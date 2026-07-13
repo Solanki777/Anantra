@@ -5,6 +5,7 @@ from django.contrib import messages
 from .forms import StudentForm
 from .models import Student
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 # Create your views here.
 def home(request):
@@ -40,7 +41,19 @@ def add_student(request):
 
 @login_required
 def student_list(request):
+
+    search = request.GET.get("search" , "")
+
     students = Student.objects.all()
+
+    if search :
+        students = students.filter(
+            Q(name__icontains=search) |
+            Q(email__icontains=search) |
+            Q(mobile__icontains=search) |
+            Q(course__icontains=search) |
+            Q(department__icontains=search) 
+        )
 
     return render(
         request,

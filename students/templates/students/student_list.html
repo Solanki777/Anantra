@@ -42,6 +42,34 @@
     <!-- ============================================================ -->
     <!-- STUDENT TABLE -->
     <!-- ============================================================ -->
+    <form method="GET" class="row g-2 align-items-center mb-4">
+
+    <div class="col-md-8">
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search by name, email, mobile, course or department..."
+            value="{{ request.GET.search }}"
+        >
+    </div>
+
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-search"></i>
+            Search
+        </button>
+    </div>
+
+    <div class="col-md-2">
+        <a href="{% url 'student_list' %}"
+           class="btn btn-outline-secondary w-100">
+            Clear
+        </a>
+    </div>
+
+</form>
+
     <section>
         <div class="et-card p-3 p-lg-4">
 
