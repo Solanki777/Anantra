@@ -13,7 +13,29 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    return render(request , "students/dashboard.html")
+    total_students = Student.objects.count()
+    total_departments = (
+        Student.objects.values("department")
+        .distinct()
+        .count()
+    )
+
+    total_courses = (
+        Student.objects.values("course")
+        .distinct()
+        .count()
+    )
+    recent_student =(
+        Student.objects.order_by("-id")[:5]
+    )
+    context = {
+        "total_students" :total_students ,
+        "total_departments" : total_departments ,
+        "total_courses" : total_courses ,
+        "recent_student" : recent_student ,
+
+    }
+    return render(request , "students/dashboard.html" , context)
 
 @login_required
 def add_student(request):
