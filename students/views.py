@@ -191,7 +191,7 @@ def export_student_csv(request):
             student.mobile,
             student.course,
             student.department,
-            student.admission_date,
+            student.admission_date.strftime("%d-%m-%Y"),
         ])
     
     return response
