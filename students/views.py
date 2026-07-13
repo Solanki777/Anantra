@@ -137,3 +137,15 @@ def delete_student(request, id):
             "student" : student
         }
     )
+
+@login_required
+def show_details(request , id):
+    student = get_object_or_404(Student, id =id)
+
+    return render(
+        request,
+        "students/student_details.html",
+        {
+            "student" : student,
+        },
+    )

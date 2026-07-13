@@ -108,6 +108,13 @@
                                     <td>{{ student.admission_date }}</td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-2">
+
+                                            <a href="{% url 'show_details' student.id %}"
+                                            class="btn btn-sm btn-info"
+                                            aria-label="View {{ student.name }}">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            
                                             <!-- Edit Button (UI only) -->
                                             <a href="{% url 'edit_student' student.id %}"
                                                class="btn btn-sm btn-warning"
