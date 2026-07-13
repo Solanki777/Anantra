@@ -1,5 +1,4 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import StudentForm
@@ -7,6 +6,9 @@ from .models import Student
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.paginator import Paginator
+import csv
+from django.http import HttpResponse
+
 
 # Create your views here.
 def home(request):
@@ -158,3 +160,38 @@ def show_details(request , id):
             "student" : student,
         },
     )
+
+
+@login_required
+def export_student_csv(request):
+    response = HttpResponse(content_type="text/csv")
+
+    response["Content-Disposition"] = (
+        'attachment; filename="student.csv"'
+    )
+
+    writer =csv.writer(response)
+
+    writer.writerow([
+        "ID",
+        "Name",
+        "Email",
+        "Mobile",
+        "Course",
+        "Department",
+        "Admission Date",]
+    )
+    students = Student.objects.all()
+
+    for student in students:
+        writer.writerow([
+            student.id,
+            student.name,
+            student.email,
+            student.mobile,
+            student.course,
+            student.department,
+            student.admission_date,
+        ])
+    
+    return response

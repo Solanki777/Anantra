@@ -20,5 +20,10 @@ urlpatterns=[
         "show/<int:id>/",
         views.show_details,
         name="show_details"
-    )
+    ),
+    path(
+        "export/csv/",
+        views.export_student_csv,
+        name="export_student_csv",
+    ),
 ]
