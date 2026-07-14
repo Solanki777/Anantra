@@ -8,6 +8,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 import csv
 from django.http import HttpResponse
+from django.db.models import Count
+
 
 
 # Create your views here.
@@ -31,11 +33,26 @@ def dashboard(request):
     recent_student =(
         Student.objects.order_by("-id")[:5]
     )
+
+    department_data = (
+        Student.objects.values("department").annotate(total = Count("department"))
+    )
+
+    department_labels = []
+    department_counts = []
+
+    for items in department_data :
+        department_labels.append(items["department"])
+        department_counts.append(items["total"])
+
     context = {
         "total_students" :total_students ,
         "total_departments" : total_departments ,
         "total_courses" : total_courses ,
         "recent_student" : recent_student ,
+        "department_labels" :department_labels,
+        "department_counts":department_counts,
+
 
     }
     return render(request , "students/dashboard.html" , context)
