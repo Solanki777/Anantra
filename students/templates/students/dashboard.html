@@ -82,6 +82,18 @@ EduTrack{% endblock %}
       </div>
     </section>
 
+    <section class="mt-4">
+    <div class="et-card p-4">
+
+        <h4 class="mb-4">
+            📊 Students by Department
+        </h4>
+
+        <canvas id="departmentChart"></canvas>
+
+    </div>
+    </section>
+
     <!-- ============================================================ -->
     <!-- RECENT STUDENTS TABLE -->
     <!-- ============================================================ -->
@@ -239,4 +251,38 @@ EduTrack{% endblock %}
   </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+const labels = JSON.parse('{{ department_labels|escapejs }}');
+const data = JSON.parse('{{ department_counts|escapejs }}');
+
+const ctx = document.getElementById("departmentChart");
+
+new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Students",
+            data: data,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+</script>
 {% endblock %}

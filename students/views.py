@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 import csv
 from django.http import HttpResponse
 from django.db.models import Count
+import json
 
 
 
@@ -50,8 +51,8 @@ def dashboard(request):
         "total_departments" : total_departments ,
         "total_courses" : total_courses ,
         "recent_student" : recent_student ,
-        "department_labels" :department_labels,
-        "department_counts":department_counts,
+        "department_labels" :json.dumps(department_labels),
+        "department_counts":json.dumps(department_counts),
 
 
     }
