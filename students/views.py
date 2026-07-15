@@ -53,6 +53,7 @@ def dashboard(request):
         "recent_student" : recent_student ,
         "department_labels" :json.dumps(department_labels),
         "department_counts":json.dumps(department_counts),
+        "department_data": department_data,
 
 
     }
