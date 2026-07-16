@@ -90,47 +90,37 @@ EduTrack{% endblock %}
       </div>
     </section>
 
-    <section class="mt-4">
-      <div class="row mt-4">
+      <section class="mt-4">
+      <div class="container-fluid">
+          <div class="row g-4">
 
-      <div class="col-lg-6 mb-4">
-          <div class="et-card p-4">
-              <h5 class="mb-4">
-                  📊 Students by Department
-              </h5>
-
-              <canvas id="departmentChart"></canvas>
-          </div>
-      </div>
-
-      <div class="col-lg-6 mb-4">
-          <div class="et-card p-4">
-              <h5 class="mb-4">
-                  🥧 Students by Course
-              </h5>
-
-              <canvas id="courseChart"></canvas>
-          </div>
-          <div class="row mt-4">
-
-          <div class="col-12">
-              <div class="et-card p-4">
-
-                  <h5 class="mb-4">
-                      📈 Monthly Admissions
-                  </h5>
-
-                  <canvas id="monthlyChart"></canvas>
-
+              <!-- Students by Department -->
+              <div class="col-12 col-md-6 col-xl-4">
+                  <div class="et-card p-4 h-100">
+                      <h5 class="mb-4">📊 Students by Department</h5>
+                      <canvas id="departmentChart"></canvas>
+                  </div>
               </div>
+
+              <!-- Students by Course -->
+              <div class="col-12 col-md-6 col-xl-4">
+                  <div class="et-card p-4 h-100">
+                      <h5 class="mb-4">🥧 Students by Course</h5>
+                      <canvas id="courseChart"></canvas>
+                  </div>
+              </div>
+
+              <!-- Monthly Admissions -->
+              <div class="col-12 col-md-6 col-xl-4">
+                  <div class="et-card p-4 h-100">
+                      <h5 class="mb-4">📈 Monthly Admissions</h5>
+                      <canvas id="monthlyChart"></canvas>
+                  </div>
+              </div>
+
           </div>
-
       </div>
-      </div>
-
-  </div>
-    </div>
-    </section>
+  </section>
 
     <!-- ============================================================ -->
     <!-- RECENT STUDENTS TABLE -->
