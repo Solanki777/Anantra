@@ -39,6 +39,10 @@ def dashboard(request):
         Student.objects.values("department").annotate(total = Count("department"))
     )
 
+    course_data = (
+        Student.objects.values("course").annotate(total = Count("department"))
+    )
+
     department_labels = []
     department_counts = []
 
