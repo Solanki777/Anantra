@@ -111,6 +111,21 @@ EduTrack{% endblock %}
 
               <canvas id="courseChart"></canvas>
           </div>
+          <div class="row mt-4">
+
+          <div class="col-12">
+              <div class="et-card p-4">
+
+                  <h5 class="mb-4">
+                      📈 Monthly Admissions
+                  </h5>
+
+                  <canvas id="monthlyChart"></canvas>
+
+              </div>
+          </div>
+
+      </div>
       </div>
 
   </div>
@@ -324,6 +339,43 @@ new Chart(courseCtx, {
             title: {
                 display: true,
                 text: "Course Distribution"
+            }
+        }
+    }
+});
+const monthlyLabels = JSON.parse('{{ monthly_labels|escapejs }}');
+const monthlyData = JSON.parse('{{ monthly_counts|escapejs }}');
+
+const monthlyCtx = document.getElementById("monthlyChart");
+
+new Chart(monthlyCtx, {
+    type: "line",
+    data: {
+        labels: monthlyLabels,
+        datasets: [{
+            label: "Admissions",
+            data: monthlyData,
+            tension: 0.4,
+            fill: false
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "bottom"
+            },
+            title: {
+                display: true,
+                text: "Monthly Student Admissions"
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
             }
         }
     }

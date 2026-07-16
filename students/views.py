@@ -10,6 +10,7 @@ import csv
 from django.http import HttpResponse
 from django.db.models import Count
 import json
+from django.db.models.functions import ExtractMonth
 
 
 
@@ -47,6 +48,43 @@ def dashboard(request):
     department_counts = []
     course_labels = []
     course_counts = []
+    month_names = {
+        1: "Jan",
+        2: "Feb",
+        3: "Mar",
+        4: "Apr",
+        5: "May",
+        6: "Jun",
+        7: "Jul",
+        8: "Aug",
+        9: "Sep",
+        10: "Oct",
+        11: "Nov",
+        12: "Dec",
+    }
+
+
+
+    monthly_data = (
+        Student.objects
+        .annotate(month=ExtractMonth("admission_date"))
+        .values("month")
+        .annotate(total = Count("id"))
+        .order_by("month")
+        
+    )
+    monthly_labels = []
+    monthly_counts = []
+
+    for item in monthly_data:
+
+        monthly_labels.append(
+            month_names[item["month"]]
+        )
+
+        monthly_counts.append(
+            item["total"]
+        )
 
     for items in department_data :
         department_labels.append(items["department"])
@@ -66,6 +104,11 @@ def dashboard(request):
 
         "course_labels" :json.dumps(course_labels),
         "course_counts":json.dumps(course_counts),
+
+        "monthly_labels" :json.dumps(monthly_labels),
+        "monthly_counts":json.dumps(monthly_counts),
+
+
         "department_data": department_data,
 
 
