@@ -45,10 +45,16 @@ def dashboard(request):
 
     department_labels = []
     department_counts = []
+    course_labels = []
+    course_counts = []
 
     for items in department_data :
         department_labels.append(items["department"])
         department_counts.append(items["total"])
+
+    for item in course_data :
+        course_labels.append(item["course"])
+        course_counts.append(item["total"])
 
     context = {
         "total_students" :total_students ,
@@ -57,6 +63,9 @@ def dashboard(request):
         "recent_student" : recent_student ,
         "department_labels" :json.dumps(department_labels),
         "department_counts":json.dumps(department_counts),
+
+        "course_labels" :json.dumps(course_labels),
+        "course_counts":json.dumps(course_counts),
         "department_data": department_data,
 
 

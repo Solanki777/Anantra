@@ -91,14 +91,29 @@ EduTrack{% endblock %}
     </section>
 
     <section class="mt-4">
-    <div class="et-card p-4">
+      <div class="row mt-4">
 
-        <h4 class="mb-4">
-            📊 Students by Department
-        </h4>
+      <div class="col-lg-6 mb-4">
+          <div class="et-card p-4">
+              <h5 class="mb-4">
+                  📊 Students by Department
+              </h5>
 
-        <canvas id="departmentChart"></canvas>
+              <canvas id="departmentChart"></canvas>
+          </div>
+      </div>
 
+      <div class="col-lg-6 mb-4">
+          <div class="et-card p-4">
+              <h5 class="mb-4">
+                  🥧 Students by Course
+              </h5>
+
+              <canvas id="courseChart"></canvas>
+          </div>
+      </div>
+
+  </div>
     </div>
     </section>
 
@@ -282,6 +297,33 @@ new Chart(ctx, {
                 ticks: {
                     precision: 0
                 }
+            }
+        }
+    }
+});
+
+const courseLabels = JSON.parse('{{ course_labels|escapejs }}');
+const courseData = JSON.parse('{{ course_counts|escapejs }}');
+
+const courseCtx = document.getElementById("courseChart");
+
+new Chart(courseCtx, {
+    type: "pie",
+    data: {
+        labels: courseLabels,
+        datasets: [{
+            data: courseData
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "bottom"
+            },
+            title: {
+                display: true,
+                text: "Course Distribution"
             }
         }
     }
