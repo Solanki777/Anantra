@@ -87,8 +87,8 @@ active
         </caption>
         <thead>
           <tr>
-            <th>Enrollment No</th>
             <th>Photo</th>
+            <th>Enrollment No</th>
             <th scope="col">Student Name</th>
             <th scope="col">Email</th>
             <th scope="col">Mobile</th>
@@ -102,7 +102,6 @@ active
         <tbody>
           {% for student in page_obj %}
           <tr>
-            <td>{{ student.enrollment_no }}</td>
             <td class="text-center">
               {% if student.photo %}
                   <img src="{{ student.photo.url }}"
@@ -119,6 +118,8 @@ active
                       class="rounded-circle border">
               {% endif %}
           </td>
+            <td>{{ student.enrollment_no }}</td>
+            
             <td>
               <div class="d-flex align-items-center gap-2">
                 <span class="student-avatar">
