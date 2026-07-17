@@ -87,12 +87,14 @@ active
         </caption>
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <th>Enrollment No</th>
+            <th>Photo</th>
             <th scope="col">Student Name</th>
             <th scope="col">Email</th>
             <th scope="col">Mobile</th>
             <th scope="col">Course</th>
             <th scope="col">Department</th>
+            <th>Semester</th>
             <th scope="col">Admission Date</th>
             <th scope="col" class="text-center">Actions</th>
           </tr>
@@ -100,7 +102,23 @@ active
         <tbody>
           {% for student in page_obj %}
           <tr>
-            <td>{{ forloop.counter }}</td>
+            <td>{{ student.enrollment_no }}</td>
+            <td class="text-center">
+              {% if student.photo %}
+                  <img src="{{ student.photo.url }}"
+                      alt="{{ student.name }}"
+                      width="50"
+                      height="50"
+                      class="rounded-circle border"
+                      style="object-fit: cover;">
+              {% else %}
+                  <img src="{% static 'images/default-avatar.png' %}"
+                      alt="Default Avatar"
+                      width="50"
+                      height="50"
+                      class="rounded-circle border">
+              {% endif %}
+          </td>
             <td>
               <div class="d-flex align-items-center gap-2">
                 <span class="student-avatar">
@@ -113,6 +131,7 @@ active
             <td>{{ student.mobile }}</td>
             <td>{{ student.course }}</td>
             <td>{{ student.department }}</td>
+            <td>{{ student.get_semester_display }}</td>
             <td>{{ student.admission_date }}</td>
             <td class="text-center">
               <div class="d-flex justify-content-center gap-2">

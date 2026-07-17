@@ -13,7 +13,7 @@ sem_choice = [
 class Student(models.Model):
 
     name = models.CharField(max_length=100)
-    enrollment_no = models.CharField(max_length=20 , unique=True)
+    enrollment_no = models.CharField(max_length=20 , unique=True,blank=True,null =True)
     semester = models.PositiveSmallIntegerField(
         choices=sem_choice
     )

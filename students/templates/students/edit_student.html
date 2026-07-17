@@ -55,8 +55,19 @@
                 {% endif %}
 
                 <!-- ==================== EDIT STUDENT FORM ==================== -->
+
                 <form method="POST" novalidate aria-label="Edit student form">
                     {% csrf_token %}
+                    {% if student.photo %}
+                    <div class="text-center mb-3">
+                        <img src="{{ student.photo.url }}"
+                            class="rounded-circle border shadow"
+                            width="150"
+                            height="150"
+                            style="object-fit: cover;"
+                            alt="{{ student.name }}">
+                    </div>
+                    {% endif %}
 
                     <div class="row g-3">
 
