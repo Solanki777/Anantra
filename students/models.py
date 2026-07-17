@@ -11,14 +11,9 @@ sem_choice = [
     (8, "Semester 8"),
 ]
 class Student(models.Model):
-    
-
-
-
-
 
     name = models.CharField(max_length=100)
-    enrollment_no = models.CharField(max_length=20 , unique=True),
+    enrollment_no = models.CharField(max_length=20 , unique=True)
     semester = models.PositiveSmallIntegerField(
         choices=sem_choice
     )

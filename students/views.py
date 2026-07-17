@@ -119,7 +119,7 @@ def dashboard(request):
 def add_student(request):
 
     if request.method == "POST":
-        form = StudentForm(request.POST)
+        form = StudentForm(request.POST ,request.FILES)
 
         if form.is_valid():
             form.save()
@@ -149,6 +149,7 @@ def student_list(request):
     if search :
         students = students.filter(
             Q(name__icontains=search) |
+            Q(enrollment_no__icontains=search) |
             Q(email__icontains=search) |
             Q(mobile__icontains=search) |
             Q(course__icontains=search) |
@@ -179,7 +180,7 @@ def edit_student(request, id):
 
     if request.method == "POST":
 
-        form =StudentForm(request.POST , instance=student)
+        form =StudentForm(request.POST, request.FILES , instance=student)
 
         if form.is_valid():
             form.save()
@@ -249,6 +250,8 @@ def export_student_csv(request):
 
     writer.writerow([
         "ID",
+        "Enrollment No",
+        "Semester",
         "Name",
         "Email",
         "Mobile",
@@ -261,6 +264,8 @@ def export_student_csv(request):
     for student in students:
         writer.writerow([
             student.id,
+            student.enrollment_no,
+            student.get_semester_display(),
             student.name,
             student.email,
             student.mobile,
