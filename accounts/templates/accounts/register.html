@@ -52,6 +52,17 @@
                 <!-- ==================== REGISTRATION FORM ==================== -->
                 <form method="post" novalidate>
                     {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">College Name</label>
+                        <input type="text"
+                            name="{{ form.college_name.html_name }}"
+                            class="form-control {% if form.college_name.errors %}is-invalid{% endif %}"
+                            value="{{ form.college_name.value|default:'' }}">
+
+                        {% for error in form.college_name.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
                     <!-- Username Field -->
                     <div class="mb-3">
@@ -87,6 +98,41 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="text"
+                            name="{{ form.phone.html_name }}"
+                            class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                            value="{{ form.phone.value|default:'' }}">
+
+                        {% for error in form.phone.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <textarea
+                            name="{{ form.address.html_name }}"
+                            class="form-control {% if form.address.errors %}is-invalid{% endif %}">{{ form.address.value|default:'' }}</textarea>
+
+                        {% for error in form.address.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">City</label>
+                        <input type="text"
+                            name="{{ form.city.html_name }}"
+                            class="form-control {% if form.city.errors %}is-invalid{% endif %}"
+                            value="{{ form.city.value|default:'' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">State</label>
+                        <input type="text"
+                            name="{{ form.state.html_name }}"
+                            class="form-control {% if form.state.errors %}is-invalid{% endif %}"
+                            value="{{ form.state.value|default:'' }}">
                     </div>
 
                     <!-- Password Field -->

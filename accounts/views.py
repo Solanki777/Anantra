@@ -3,22 +3,42 @@ from .forms import RegisterForm
 from django.contrib.auth import authenticate,login ,logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
+from colleges.models import College
 
 def register_view(request):
 
-    if request.method=="POST":
+    if request.method == "POST":
         form = RegisterForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect("home")
-        
+
+            user = form.save()
+
+            College.objects.create(
+                admin=user,
+                college_name=form.cleaned_data["college_name"],
+                email=form.cleaned_data["email"],
+                phone=form.cleaned_data["phone"],
+                address=form.cleaned_data["address"],
+                city=form.cleaned_data["city"],
+                state=form.cleaned_data["state"],
+            )
+
+            messages.success(
+                request,
+                "College registered successfully."
+            )
+
+            return redirect("login")
+
     else:
-        form=RegisterForm()
+        form = RegisterForm()
 
-    return render(request, "accounts/register.html",{"form":form})
-
+    return render(
+        request,
+        "accounts/register.html",
+        {"form": form}
+    )
 
 def login_view(request):
 
