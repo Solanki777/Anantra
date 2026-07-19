@@ -20,7 +20,9 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    total_students = Student.objects.count()
+    total_students = Student.objects.filter(
+        college = request.user.college
+    ).count()
     total_departments = (
         Student.objects.values("department")
         .distinct()
@@ -122,6 +124,8 @@ def add_student(request):
         form = StudentForm(request.POST ,request.FILES)
 
         if form.is_valid():
+            student = form.save(commit=False)
+            student.college = request.user.college
             form.save()
 
             messages.success(
@@ -144,7 +148,9 @@ def student_list(request):
 
     search = request.GET.get("search" , "")
 
-    students = Student.objects.all()
+    students = Student.objects.filter(
+        college = request.user.college
+    )
 
     if search :
         students = students.filter(
@@ -176,7 +182,7 @@ def student_list(request):
 @login_required
 def edit_student(request, id):
     
-    student = get_object_or_404(Student, id=id)
+    student = get_object_or_404(Student, id=id , college = request.user.college)
 
     if request.method == "POST":
         old_photo = student.photo
@@ -209,7 +215,7 @@ def edit_student(request, id):
 
 @login_required
 def delete_student(request, id):
-    student = get_object_or_404(Student, id=id )
+    student = get_object_or_404(Student, id=id , college = request.user.college )
     if request.method == "POST":
         if student.photo:
             student.photo.delete(save=False)
@@ -231,7 +237,7 @@ def delete_student(request, id):
 
 @login_required
 def show_details(request , id):
-    student = get_object_or_404(Student, id =id)
+    student = get_object_or_404(Student, id =id , college = request.user.college)
 
     return render(
         request,
@@ -263,7 +269,9 @@ def export_student_csv(request):
         "Department",
         "Admission Date",]
     )
-    students = Student.objects.all()
+    students = Student.objects.filter(
+        college = request.user.college
+    )
 
     for student in students:
         writer.writerow([

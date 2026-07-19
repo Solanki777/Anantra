@@ -1,4 +1,5 @@
 from django.db import models
+from colleges.models import College
 
 sem_choice = [
     (1, "Semester 1"),
@@ -12,6 +13,12 @@ sem_choice = [
 ]
 class Student(models.Model):
 
+    college = models.ForeignKey(
+        College,
+        on_delete=models.CASCADE,
+        related_name="students"
+
+    )
     name = models.CharField(max_length=100)
     enrollment_no = models.CharField(max_length=20 , unique=True,blank=True,null =True)
     semester = models.PositiveSmallIntegerField(
