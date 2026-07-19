@@ -20,36 +20,36 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    total_students = Student.objects.filter(
-        college = request.user.college
-    ).count()
+
+    # Students belonging to the logged-in college only
+    students = Student.objects.filter(college=request.user.college)
+
+    total_students = students.count()
+
     total_departments = (
-        Student.objects.values("department")
+        students.values("department")
         .distinct()
         .count()
     )
 
     total_courses = (
-        Student.objects.values("course")
+        students.values("course")
         .distinct()
         .count()
     )
-    recent_student =(
-        Student.objects.order_by("-id")[:5]
-    )
+
+    recent_student = students.order_by("-id")[:5]
 
     department_data = (
-        Student.objects.values("department").annotate(total = Count("department"))
+        students.values("department")
+        .annotate(total=Count("department"))
     )
 
     course_data = (
-        Student.objects.values("course").annotate(total = Count("department"))
+        students.values("course")
+        .annotate(total=Count("course"))
     )
 
-    department_labels = []
-    department_counts = []
-    course_labels = []
-    course_counts = []
     month_names = {
         1: "Jan",
         2: "Feb",
@@ -65,57 +65,52 @@ def dashboard(request):
         12: "Dec",
     }
 
-
-
     monthly_data = (
-        Student.objects
+        students
         .annotate(month=ExtractMonth("admission_date"))
         .values("month")
-        .annotate(total = Count("id"))
+        .annotate(total=Count("id"))
         .order_by("month")
-        
     )
+
+    department_labels = []
+    department_counts = []
+    course_labels = []
+    course_counts = []
     monthly_labels = []
     monthly_counts = []
 
-    for item in monthly_data:
+    for item in department_data:
+        department_labels.append(item["department"])
+        department_counts.append(item["total"])
 
-        monthly_labels.append(
-            month_names[item["month"]]
-        )
-
-        monthly_counts.append(
-            item["total"]
-        )
-
-    for items in department_data :
-        department_labels.append(items["department"])
-        department_counts.append(items["total"])
-
-    for item in course_data :
+    for item in course_data:
         course_labels.append(item["course"])
         course_counts.append(item["total"])
 
+    for item in monthly_data:
+        monthly_labels.append(month_names[item["month"]])
+        monthly_counts.append(item["total"])
+
     context = {
-        "total_students" :total_students ,
-        "total_departments" : total_departments ,
-        "total_courses" : total_courses ,
-        "recent_student" : recent_student ,
-        "department_labels" :json.dumps(department_labels),
-        "department_counts":json.dumps(department_counts),
+        "total_students": total_students,
+        "total_departments": total_departments,
+        "total_courses": total_courses,
+        "recent_student": recent_student,
 
-        "course_labels" :json.dumps(course_labels),
-        "course_counts":json.dumps(course_counts),
+        "department_labels": json.dumps(department_labels),
+        "department_counts": json.dumps(department_counts),
 
-        "monthly_labels" :json.dumps(monthly_labels),
-        "monthly_counts":json.dumps(monthly_counts),
+        "course_labels": json.dumps(course_labels),
+        "course_counts": json.dumps(course_counts),
 
+        "monthly_labels": json.dumps(monthly_labels),
+        "monthly_counts": json.dumps(monthly_counts),
 
         "department_data": department_data,
-
-
     }
-    return render(request , "students/dashboard.html" , context)
+
+    return render(request, "students/dashboard.html", context)
 
 @login_required
 def add_student(request):
@@ -126,7 +121,7 @@ def add_student(request):
         if form.is_valid():
             student = form.save(commit=False)
             student.college = request.user.college
-            form.save()
+            student.save()
 
             messages.success(
                 request,
@@ -135,12 +130,12 @@ def add_student(request):
             return redirect("student_list")
     else:
         form = StudentForm()
-        return render(
-            request,
-            "students/add_student.html",
-            {
+    return render(
+        request,
+        "students/add_student.html",
+        {
                 "form":form
-            }
+        }
         )
 
 @login_required
