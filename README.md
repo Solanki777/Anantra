@@ -1,6 +1,6 @@
-# EduTrack
+# Anantra
 
-EduTrack is a Django-based Student Management System designed to simplify student record management through a secure web interface. It provides user authentication, dashboard analytics, CRUD operations, and search functionality using Django ORM.
+Anantra is a Django-based Student Management System designed to simplify student record management through a secure web interface. It provides user authentication, dashboard analytics, CRUD operations, and search functionality using Django ORM.
 
 ## Features
 
@@ -21,10 +21,10 @@ EduTrack is a Django-based Student Management System designed to simplify studen
 ## Project Structure
 
 ```
-EduTrack/
+Anantra/
 ├── accounts/            # Authentication app (register, login, logout)
 ├── students/            # Core app: student model, views, forms, templates
-├── edutrack/            # Project settings, URLs, WSGI/ASGI config
+├── Anantra/            # Project settings, URLs, WSGI/ASGI config
 ├── templates/            # Shared/base templates
 ├── static/               # CSS and static images
 ├── media/students/       # Uploaded student photos
@@ -59,7 +59,7 @@ EduTrack/
 
 ```bash
 # Clone or extract the project, then move into it
-cd EduTrack
+cd Anantra
 
 # Create and activate a virtual environment
 python -m venv venv

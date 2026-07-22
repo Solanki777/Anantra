@@ -52,7 +52,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "edutrack.urls"
+ROOT_URLCONF = "Anantra.urls"
 
 TEMPLATES = [
     {
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "edutrack.wsgi.application"
+WSGI_APPLICATION = "Anantra.wsgi.application"
 
 
 # Database
