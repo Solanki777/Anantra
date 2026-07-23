@@ -1,7 +1,10 @@
 {% load static %}
-<html>
+<html lang="en">
     <head>
-        
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Super Admin Dashboard | Anantra Campus</title>
+
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <!-- Bootstrap 5 CSS (CDN) -->
@@ -10,62 +13,766 @@
         <!-- Bootstrap Icons (CDN) -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-        <!-- Google Font: Poppins -->
+        <!-- Google Fonts: Poppins (UI) + JetBrains Mono (data/timestamps) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
         <!-- Project Custom CSS -->
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
         {% block extra_css %}{% endblock %}
-        
 
-      
+        <style>
+            :root {
+                --ac-primary: #0d6efd;
+                --ac-primary-dark: #0b5ed7;
+                --ac-secondary: #6c757d;
+                --ac-ink: #0f172a;
+                --ac-ink-soft: #475569;
+                --ac-sidebar: #0f172a;
+                --ac-sidebar-hover: rgba(255,255,255,.06);
+                --ac-success: #16a34a;
+                --ac-success-soft: #e8f8ee;
+                --ac-warning: #f59e0b;
+                --ac-warning-soft: #fef3e2;
+                --ac-danger: #dc3545;
+                --ac-danger-soft: #fdeaec;
+                --ac-info-soft: #e8f1ff;
+                --ac-border: #eef0f4;
+                --ac-shadow: 0 2px 10px rgba(15, 23, 42, .05);
+                --ac-shadow-hover: 0 12px 28px rgba(15, 23, 42, .10);
+                --sidebar-w: 260px;
+            }
 
+            * { box-sizing: border-box; }
+
+            body {
+                font-family: 'Poppins', sans-serif;
+                background: #f7f8fb;
+                color: var(--ac-ink);
+                margin: 0;
+            }
+
+            .mono { font-family: 'JetBrains Mono', monospace; }
+
+            a { text-decoration: none; }
+
+            /* ============ SIDEBAR ============ */
+            .ac-sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: var(--sidebar-w);
+                background: var(--ac-sidebar);
+                color: #cbd5e1;
+                display: flex;
+                flex-direction: column;
+                z-index: 1040;
+                transition: transform .25s ease;
+            }
+
+            .ac-sidebar .brand {
+                display: flex;
+                align-items: center;
+                gap: .6rem;
+                padding: 1.4rem 1.4rem 1.1rem;
+                color: #fff;
+                font-weight: 700;
+                font-size: 1.05rem;
+                letter-spacing: .2px;
+            }
+
+            .ac-sidebar .brand .mark {
+                width: 34px;
+                height: 34px;
+                border-radius: 10px;
+                background: linear-gradient(135deg, var(--ac-primary), #6ea8fe);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+                flex: none;
+            }
+
+            .ac-nav-section-label {
+                text-transform: uppercase;
+                font-size: .68rem;
+                letter-spacing: .09em;
+                color: #64748b;
+                padding: .4rem 1.4rem;
+                margin-top: .5rem;
+            }
+
+            .ac-nav {
+                flex: 1;
+                overflow-y: auto;
+                padding-bottom: 1rem;
+            }
+
+            .ac-nav .nav-link {
+                display: flex;
+                align-items: center;
+                gap: .75rem;
+                color: #cbd5e1;
+                padding: .65rem 1.4rem;
+                font-size: .89rem;
+                font-weight: 500;
+                border-left: 3px solid transparent;
+                transition: background .15s ease, color .15s ease;
+            }
+
+            .ac-nav .nav-link i { font-size: 1.05rem; width: 20px; text-align: center; }
+
+            .ac-nav .nav-link:hover {
+                background: var(--ac-sidebar-hover);
+                color: #fff;
+            }
+
+            .ac-nav .nav-link.active {
+                background: var(--ac-sidebar-hover);
+                color: #fff;
+                border-left-color: var(--ac-primary);
+            }
+
+            .ac-sidebar-footer {
+                padding: 1rem 1.4rem 1.3rem;
+                border-top: 1px solid rgba(255,255,255,.08);
+                font-size: .74rem;
+                color: #64748b;
+            }
+
+            /* ============ TOP NAVBAR ============ */
+            .ac-topbar {
+                position: sticky;
+                top: 0;
+                z-index: 1030;
+                background: #fff;
+                border-bottom: 1px solid var(--ac-border);
+                padding: .75rem 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .ac-menu-btn {
+                display: none;
+                border: none;
+                background: transparent;
+                font-size: 1.3rem;
+                color: var(--ac-ink);
+            }
+
+            .ac-search {
+                position: relative;
+                flex: 1;
+                max-width: 380px;
+            }
+
+            .ac-search input {
+                width: 100%;
+                border: 1px solid var(--ac-border);
+                background: #f7f8fb;
+                border-radius: 10px;
+                padding: .55rem .9rem .55rem 2.3rem;
+                font-size: .87rem;
+                transition: box-shadow .15s ease, border-color .15s ease;
+            }
+
+            .ac-search input:focus {
+                outline: none;
+                border-color: var(--ac-primary);
+                box-shadow: 0 0 0 3px rgba(13,110,253,.12);
+                background: #fff;
+            }
+
+            .ac-search i {
+                position: absolute;
+                left: .8rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--ac-secondary);
+                font-size: .9rem;
+            }
+
+            .ac-topbar-actions {
+                margin-left: auto;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .ac-bell {
+                position: relative;
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                border: 1px solid var(--ac-border);
+                background: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--ac-ink-soft);
+                font-size: 1.05rem;
+            }
+
+            .ac-bell .dot {
+                position: absolute;
+                top: 8px;
+                right: 9px;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--ac-danger);
+                border: 2px solid #fff;
+            }
+
+            .ac-profile {
+                display: flex;
+                align-items: center;
+                gap: .6rem;
+                cursor: pointer;
+            }
+
+            .ac-avatar {
+                width: 38px;
+                height: 38px;
+                border-radius: 10px;
+                background: linear-gradient(135deg, var(--ac-primary), #6ea8fe);
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: .85rem;
+            }
+
+            .ac-profile .name { font-size: .84rem; font-weight: 600; line-height: 1.1; }
+            .ac-profile .role { font-size: .72rem; color: var(--ac-secondary); }
+
+            /* ============ MAIN CONTENT ============ */
+            .ac-main {
+                margin-left: var(--sidebar-w);
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .ac-content { padding: 1.6rem; flex: 1; }
+
+            .ac-page-title { font-weight: 700; font-size: 1.35rem; margin-bottom: .15rem; }
+            .ac-page-sub { color: var(--ac-secondary); font-size: .89rem; margin-bottom: 1.5rem; }
+
+            /* ============ STAT CARDS ============ */
+            .ac-stat-card {
+                border: 1px solid var(--ac-border);
+                border-radius: 16px;
+                padding: 1.3rem 1.4rem;
+                background: #fff;
+                box-shadow: var(--ac-shadow);
+                transition: transform .18s ease, box-shadow .18s ease;
+                height: 100%;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .ac-stat-card:hover {
+                transform: translateY(-4px);
+                box-shadow: var(--ac-shadow-hover);
+            }
+
+            .ac-stat-card .icon-wrap {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2rem;
+                margin-bottom: .9rem;
+            }
+
+            .ac-stat-card h3 {
+                font-weight: 700;
+                font-size: 1.9rem;
+                margin: 0 0 .15rem;
+                font-family: 'JetBrains Mono', monospace;
+            }
+
+            .ac-stat-card p.label {
+                margin: 0;
+                color: var(--ac-ink-soft);
+                font-size: .84rem;
+                font-weight: 500;
+            }
+
+            .ac-stat-card .trend {
+                position: absolute;
+                top: 1.3rem;
+                right: 1.4rem;
+                font-size: .74rem;
+                font-weight: 600;
+                padding: .2rem .55rem;
+                border-radius: 999px;
+            }
+
+            .card-total { background: linear-gradient(160deg, #ffffff 0%, var(--ac-info-soft) 130%); }
+            .card-total .icon-wrap { background: var(--ac-info-soft); color: var(--ac-primary); }
+            .card-total .trend { background: var(--ac-info-soft); color: var(--ac-primary); }
+
+            .card-pending { background: linear-gradient(160deg, #ffffff 0%, var(--ac-warning-soft) 130%); }
+            .card-pending .icon-wrap { background: var(--ac-warning-soft); color: var(--ac-warning); }
+            .card-pending .trend { background: var(--ac-warning-soft); color: #b45309; }
+
+            .card-approved { background: linear-gradient(160deg, #ffffff 0%, var(--ac-success-soft) 130%); }
+            .card-approved .icon-wrap { background: var(--ac-success-soft); color: var(--ac-success); }
+            .card-approved .trend { background: var(--ac-success-soft); color: var(--ac-success); }
+
+            .card-rejected { background: linear-gradient(160deg, #ffffff 0%, var(--ac-danger-soft) 130%); }
+            .card-rejected .icon-wrap { background: var(--ac-danger-soft); color: var(--ac-danger); }
+            .card-rejected .trend { background: var(--ac-danger-soft); color: var(--ac-danger); }
+
+            /* ============ PANELS ============ */
+            .ac-panel {
+                border: 1px solid var(--ac-border);
+                border-radius: 16px;
+                background: #fff;
+                box-shadow: var(--ac-shadow);
+                height: 100%;
+            }
+
+            .ac-panel-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.15rem 1.4rem;
+                border-bottom: 1px solid var(--ac-border);
+            }
+
+            .ac-panel-header h5 {
+                font-weight: 600;
+                font-size: .98rem;
+                margin: 0;
+            }
+
+            .ac-panel-header .link { font-size: .8rem; font-weight: 600; color: var(--ac-primary); }
+
+            .ac-panel-body { padding: 1.1rem 1.4rem 1.4rem; }
+
+            /* ============ TABLE ============ */
+            .ac-table { margin: 0; }
+            .ac-table thead th {
+                font-size: .72rem;
+                text-transform: uppercase;
+                letter-spacing: .06em;
+                color: var(--ac-secondary);
+                font-weight: 600;
+                border-bottom: 1px solid var(--ac-border);
+                padding: .7rem .5rem;
+                white-space: nowrap;
+            }
+            .ac-table tbody td {
+                padding: .85rem .5rem;
+                font-size: .87rem;
+                vertical-align: middle;
+                border-bottom: 1px solid var(--ac-border);
+            }
+            .ac-table tbody tr:last-child td { border-bottom: none; }
+
+            .college-cell { display: flex; align-items: center; gap: .6rem; }
+            .college-avatar {
+                width: 34px; height: 34px; border-radius: 8px;
+                background: var(--ac-info-soft); color: var(--ac-primary);
+                display: flex; align-items: center; justify-content: center;
+                font-weight: 600; font-size: .78rem; flex: none;
+            }
+            .college-cell .city-tag { color: var(--ac-secondary); font-size: .78rem; }
+
+            .badge-status {
+                font-size: .72rem;
+                font-weight: 600;
+                padding: .32rem .65rem;
+                border-radius: 999px;
+            }
+            .badge-pending { background: var(--ac-warning-soft); color: #b45309; }
+            .badge-approved { background: var(--ac-success-soft); color: var(--ac-success); }
+            .badge-rejected { background: var(--ac-danger-soft); color: var(--ac-danger); }
+
+            .date-cell { color: var(--ac-secondary); font-size: .8rem; }
+
+            /* ============ ACTIVITY FEED ============ */
+            .activity-item {
+                display: flex;
+                gap: .8rem;
+                padding: .75rem 0;
+                border-bottom: 1px solid var(--ac-border);
+            }
+            .activity-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+            .activity-icon {
+                width: 34px; height: 34px; border-radius: 9px;
+                display: flex; align-items: center; justify-content: center;
+                font-size: .95rem; flex: none;
+            }
+            .activity-new { background: var(--ac-info-soft); color: var(--ac-primary); }
+            .activity-approved { background: var(--ac-success-soft); color: var(--ac-success); }
+            .activity-rejected { background: var(--ac-danger-soft); color: var(--ac-danger); }
+
+            .activity-text { font-size: .85rem; line-height: 1.4; }
+            .activity-time { font-size: .74rem; color: var(--ac-secondary); }
+
+            /* ============ CHARTS ============ */
+            .chart-wrap { position: relative; height: 280px; }
+            .chart-wrap.pie { height: 240px; }
+
+            .legend-row {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+                font-size: .82rem;
+                margin-bottom: .5rem;
+            }
+            .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+            /* ============ FOOTER ============ */
+            .ac-footer {
+                text-align: center;
+                font-size: .82rem;
+                color: var(--ac-secondary);
+                padding: 1.2rem;
+                border-top: 1px solid var(--ac-border);
+                background: #fff;
+            }
+
+            /* ============ RESPONSIVE ============ */
+            @media (max-width: 991.98px) {
+                .ac-sidebar { transform: translateX(-100%); box-shadow: 0 0 0 100vmax rgba(0,0,0,0); }
+                .ac-sidebar.show { transform: translateX(0); box-shadow: 20px 0 40px rgba(0,0,0,.15); }
+                .ac-main { margin-left: 0; }
+                .ac-menu-btn { display: inline-flex; }
+                .ac-search { max-width: none; }
+            }
+
+            @media (max-width: 575.98px) {
+                .ac-content { padding: 1rem; }
+                .ac-profile .name, .ac-profile .role { display: none; }
+            }
+
+            .ac-backdrop {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(15,23,42,.4);
+                z-index: 1035;
+            }
+            .ac-backdrop.show { display: block; }
+        </style>
     </head>
     <body>
 
-        <h2>Super Admin Dashboard</h2>
+        <div class="ac-backdrop" id="acBackdrop"></div>
 
-        <div class="row">
-
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h3>{{ total_colleges }}</h3>
-                        <p>Total Colleges</p>
-                    </div>
-                </div>
+        <!-- ============ SIDEBAR ============ -->
+        <aside class="ac-sidebar" id="acSidebar">
+            <div class="brand">
+                <span class="mark">🏫</span>
+                <span>Anantra Campus</span>
             </div>
 
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h3>{{ pending_colleges }}</h3>
-                        <p>Pending</p>
+            <div class="ac-nav-section-label">Overview</div>
+            <nav class="ac-nav">
+                <a href="#" class="nav-link active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+                <a href="#" class="nav-link"><i class="bi bi-mortarboard"></i> Colleges</a>
+                <a href="#" class="nav-link"><i class="bi bi-hourglass-split"></i> Pending Approvals</a>
+                <a href="#" class="nav-link"><i class="bi bi-people"></i> Students</a>
+
+                <div class="ac-nav-section-label">Insights</div>
+                <a href="#" class="nav-link"><i class="bi bi-bar-chart-line"></i> Reports</a>
+                <a href="#" class="nav-link"><i class="bi bi-bell"></i> Notifications</a>
+
+                <div class="ac-nav-section-label">System</div>
+                <a href="#" class="nav-link"><i class="bi bi-gear"></i> Settings</a>
+                <a href="#" class="nav-link"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </nav>
+
+            <div class="ac-sidebar-footer">
+                Super Admin Console<br>v1.0
+            </div>
+        </aside>
+
+        <!-- ============ MAIN ============ -->
+        <div class="ac-main">
+
+            <!-- TOP NAVBAR -->
+            <header class="ac-topbar">
+                <button class="ac-menu-btn" id="acMenuBtn"><i class="bi bi-list"></i></button>
+
+                <div class="ac-search">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Search colleges, students, requests...">
+                </div>
+
+                <div class="ac-topbar-actions">
+                    <button class="ac-bell"><i class="bi bi-bell"></i><span class="dot"></span></button>
+                    <div class="ac-profile">
+                        <div class="ac-avatar">SA</div>
+                        <div>
+                            <div class="name">Super Admin</div>
+                            <div class="role">Platform Owner</div>
+                        </div>
+                        <i class="bi bi-chevron-down" style="font-size:.75rem;color:var(--ac-secondary);"></i>
                     </div>
                 </div>
-            </div>
+            </header>
 
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h3>{{ approved_colleges }}</h3>
-                        <p>Approved</p>
+            <div class="ac-content">
+
+                <div class="ac-page-title">Super Admin Dashboard</div>
+                <p class="ac-page-sub">A quick look at every college on the Anantra Campus platform.</p>
+
+                <!-- ============ STAT CARDS ============ -->
+                <div class="row g-3 mb-3">
+                    <div class="col-6 col-lg-3">
+                        <div class="ac-stat-card card-total">
+                            <span class="trend"><i class="bi bi-arrow-up-short"></i>All time</span>
+                            <div class="icon-wrap"><i class="bi bi-mortarboard-fill"></i></div>
+                            <h3>{{ total_colleges|default:"0" }}</h3>
+                            <p class="label">Total Colleges</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-3">
+                        <div class="ac-stat-card card-pending">
+                            <span class="trend">Awaiting</span>
+                            <div class="icon-wrap"><i class="bi bi-hourglass-split"></i></div>
+                            <h3>{{ pending_colleges|default:"0" }}</h3>
+                            <p class="label">Pending</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-3">
+                        <div class="ac-stat-card card-approved">
+                            <span class="trend"><i class="bi bi-check2"></i> Active</span>
+                            <div class="icon-wrap"><i class="bi bi-patch-check-fill"></i></div>
+                            <h3>{{ approved_colleges|default:"0" }}</h3>
+                            <p class="label">Approved</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-3">
+                        <div class="ac-stat-card card-rejected">
+                            <span class="trend">Closed</span>
+                            <div class="icon-wrap"><i class="bi bi-x-circle-fill"></i></div>
+                            <h3>{{ rejected_colleges|default:"0" }}</h3>
+                            <p class="label">Rejected</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h3>{{ rejected_colleges }}</h3>
-                        <p>Rejected</p>
+                <!-- ============ TABLE + ACTIVITY ============ -->
+                <div class="row g-3 mb-3">
+                    <div class="col-lg-8">
+                        <div class="ac-panel">
+                            <div class="ac-panel-header">
+                                <h5>Recent College Registrations</h5>
+                                <a href="#" class="link">View all</a>
+                            </div>
+                            <div class="ac-panel-body">
+                                <div class="table-responsive">
+                                    <table class="table ac-table">
+                                        <thead>
+                                            <tr>
+                                                <th>College</th>
+                                                <th>Principal</th>
+                                                <th>Email</th>
+                                                <th>City</th>
+                                                <th>Status</th>
+                                                <th>Registered</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for college in recent_colleges %}
+                                            <tr>
+                                                <td>
+                                                    <div class="college-cell">
+                                                        <div class="college-avatar">{{ college.college_name|slice:":2"|upper }}</div>
+                                                        <div>
+                                                            <div>{{ college.college_name }}</div>
+                                                            <div class="city-tag">{{ college.college_code }}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ college.admin.get_full_name|default:college.admin.username }}</td>
+                                                <td>{{ college.email }}</td>
+                                                <td>{{ college.city }}</td>
+                                                <td>
+                                                    <span class="badge-status badge-{{ college.status }}">{{ college.get_status_display }}</span>
+                                                </td>
+                                                <td class="date-cell mono">{{ college.created_at|date:"d M Y" }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center text-secondary py-4">No registrations yet.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="ac-panel">
+                            <div class="ac-panel-header">
+                                <h5>Recent Activity</h5>
+                                <a href="#" class="link">Clear</a>
+                            </div>
+                            <div class="ac-panel-body">
+                                {% for activity in recent_activities %}
+                                <div class="activity-item">
+                                    <div class="activity-icon activity-{{ activity.type }}">
+                                        {% if activity.type == "approved" %}
+                                            <i class="bi bi-check-lg"></i>
+                                        {% elif activity.type == "rejected" %}
+                                            <i class="bi bi-x-lg"></i>
+                                        {% else %}
+                                            <i class="bi bi-plus-lg"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="activity-text">{{ activity.message }}</div>
+                                        <div class="activity-time mono">{{ activity.timestamp }}</div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="activity-item">
+                                    <div class="activity-icon activity-new"><i class="bi bi-info-circle"></i></div>
+                                    <div>
+                                        <div class="activity-text">No recent activity to show.</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- ============ CHARTS ============ -->
+                <div class="row g-3 mb-3">
+                    <div class="col-lg-8">
+                        <div class="ac-panel">
+                            <div class="ac-panel-header">
+                                <h5>College Registration Trend</h5>
+                                <a href="#" class="link">Last 6 months</a>
+                            </div>
+                            <div class="ac-panel-body">
+                                <div class="chart-wrap">
+                                    <canvas id="trendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="ac-panel">
+                            <div class="ac-panel-header">
+                                <h5>Status Distribution</h5>
+                            </div>
+                            <div class="ac-panel-body">
+                                <div class="chart-wrap pie">
+                                    <canvas id="statusPieChart"></canvas>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="legend-row"><span class="legend-dot" style="background:#f59e0b;"></span> Pending</div>
+                                    <div class="legend-row"><span class="legend-dot" style="background:#16a34a;"></span> Approved</div>
+                                    <div class="legend-row"><span class="legend-dot" style="background:#dc3545;"></span> Rejected</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
+            <footer class="ac-footer">
+                &copy; 2026 Anantra Technologies
+            </footer>
         </div>
 
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            // Sidebar toggle (mobile)
+            const sidebar = document.getElementById('acSidebar');
+            const backdrop = document.getElementById('acBackdrop');
+            document.getElementById('acMenuBtn').addEventListener('click', function () {
+                sidebar.classList.toggle('show');
+                backdrop.classList.toggle('show');
+            });
+            backdrop.addEventListener('click', function () {
+                sidebar.classList.remove('show');
+                backdrop.classList.remove('show');
+            });
+
+            // Registration Trend (line chart)
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            const trendGradient = trendCtx.createLinearGradient(0, 0, 0, 260);
+            trendGradient.addColorStop(0, 'rgba(13,110,253,.22)');
+            trendGradient.addColorStop(1, 'rgba(13,110,253,0)');
+
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: {{ chart_labels|default:"['Feb','Mar','Apr','May','Jun','Jul']"|safe }},
+                    datasets: [{
+                        label: 'New Registrations',
+                        data: {{ chart_values|default:"[4, 7, 6, 9, 12, 15]"|safe }},
+                        borderColor: '#0d6efd',
+                        backgroundColor: trendGradient,
+                        borderWidth: 2.5,
+                        tension: 0.35,
+                        fill: true,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#0d6efd',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#eef0f4' }, ticks: { font: { family: 'JetBrains Mono', size: 11 } } },
+                        x: { grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } }
+                    }
+                }
+            });
+
+            // Status Distribution (pie chart)
+            new Chart(document.getElementById('statusPieChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'Approved', 'Rejected'],
+                    datasets: [{
+                        data: [
+                            {{ pending_colleges|default:"0" }},
+                            {{ approved_colleges|default:"0" }},
+                            {{ rejected_colleges|default:"0" }}
+                        ],
+                        backgroundColor: ['#f59e0b', '#16a34a', '#dc3545'],
+                        borderWidth: 0,
+                        hoverOffset: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '68%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        </script>
+
+        {% block extra_js %}{% endblock %}
     </body>
 </html>
