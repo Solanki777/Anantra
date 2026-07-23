@@ -1,0 +1,434 @@
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pending Colleges | Anantra Campus</title>
+
+        <link rel="stylesheet" href="css/sidebar.css">
+
+        <!-- Bootstrap 5 CSS (CDN) -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap Icons (CDN) -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+        <!-- Google Fonts: Poppins -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+        <!-- Project Custom CSS -->
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+        {% block extra_css %}{% endblock %}
+
+        <style>
+            :root {
+                --ac-primary: #2563eb;
+                --ac-primary-dark: #1d4ed8;
+                --ac-primary-soft: #eaf0ff;
+                --ac-sidebar: #0f172a;
+                --ac-sidebar-hover: rgba(255,255,255,.06);
+                --ac-text: #1e293b;
+                --ac-text-soft: #64748b;
+                --ac-bg: #f8fafc;
+                --ac-border: #e2e8f0;
+                --ac-shadow: 0 2px 10px rgba(15, 23, 42, .05);
+                --ac-shadow-hover: 0 12px 28px rgba(15, 23, 42, .10);
+                --sidebar-w: 260px;
+                --ac-radius-lg: 16px;
+                --ac-radius-md: 12px;
+            }
+
+            * { box-sizing: border-box; }
+
+            body {
+                font-family: 'Poppins', sans-serif;
+                background: var(--ac-bg);
+                color: var(--ac-text);
+                margin: 0;
+            }
+
+            .mono { font-family: 'JetBrains Mono', monospace; }
+            a { text-decoration: none; }
+
+            /* ============ SIDEBAR / TOPBAR (shared shell) ============ */
+            .ac-sidebar {
+                position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+                background: var(--ac-sidebar); color: #cbd5e1;
+                display: flex; flex-direction: column; z-index: 1040;
+                transition: transform .25s ease;
+            }
+            .ac-sidebar .brand {
+                display: flex; align-items: center; gap: .6rem;
+                padding: 1.4rem 1.4rem 1.1rem; color: #fff; font-weight: 700;
+                font-size: 1.05rem; letter-spacing: .2px;
+            }
+            .ac-sidebar .brand .mark {
+                width: 34px; height: 34px; border-radius: 10px;
+                background: linear-gradient(135deg, var(--ac-primary), #6ea8fe);
+                display: flex; align-items: center; justify-content: center;
+                font-size: 1.1rem; flex: none;
+            }
+            .ac-nav { flex: 1; overflow-y: auto; padding-bottom: 1rem; }
+            .ac-nav .nav-link {
+                display: flex; align-items: center; gap: .75rem; color: #cbd5e1;
+                padding: .65rem 1.4rem; font-size: .89rem; font-weight: 500;
+                border-left: 3px solid transparent; transition: background .15s ease, color .15s ease;
+            }
+            .ac-nav .nav-link i { font-size: 1.05rem; width: 20px; text-align: center; }
+            .ac-nav .nav-link:hover { background: var(--ac-sidebar-hover); color: #fff; }
+            .ac-nav .nav-link.active { background: var(--ac-sidebar-hover); color: #fff; border-left-color: var(--ac-primary); }
+            .ac-sidebar-footer {
+                padding: 1rem 1.4rem 1.3rem; border-top: 1px solid rgba(255,255,255,.08);
+                font-size: .74rem; color: #64748b;
+            }
+
+            .ac-topbar {
+                position: sticky; top: 0; z-index: 1030; background: #fff;
+                border-bottom: 1px solid var(--ac-border); padding: .75rem 1.5rem;
+                display: flex; align-items: center; gap: 1rem;
+            }
+            .ac-menu-btn { display: none; border: none; background: transparent; font-size: 1.3rem; color: var(--ac-text); }
+            .ac-search { position: relative; flex: 1; max-width: 380px; }
+            .ac-search input {
+                width: 100%; border: 1px solid var(--ac-border); background: #f7f8fb;
+                border-radius: 10px; padding: .55rem .9rem .55rem 2.3rem; font-size: .87rem;
+            }
+            .ac-search input:focus {
+                outline: none; border-color: var(--ac-primary);
+                box-shadow: 0 0 0 3px rgba(37,99,235,.12); background: #fff;
+            }
+            .ac-search i { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); color: var(--ac-text-soft); font-size: .9rem; }
+            .ac-topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+            .ac-bell {
+                position: relative; width: 40px; height: 40px; border-radius: 10px;
+                border: 1px solid var(--ac-border); background: #fff;
+                display: flex; align-items: center; justify-content: center;
+                color: var(--ac-text-soft); font-size: 1.05rem;
+            }
+            .ac-bell .dot {
+                position: absolute; top: 8px; right: 9px; width: 8px; height: 8px;
+                border-radius: 50%; background: #dc3545; border: 2px solid #fff;
+            }
+            .ac-profile { display: flex; align-items: center; gap: .6rem; cursor: pointer; }
+            .ac-avatar {
+                width: 38px; height: 38px; border-radius: 10px;
+                background: linear-gradient(135deg, var(--ac-primary), #6ea8fe);
+                color: #fff; display: flex; align-items: center; justify-content: center;
+                font-weight: 600; font-size: .85rem;
+            }
+            .ac-profile .name { font-size: .84rem; font-weight: 600; line-height: 1.1; }
+            .ac-profile .role { font-size: .72rem; color: var(--ac-text-soft); }
+
+            .ac-main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
+            .ac-content { padding: 1.6rem; flex: 1; }
+
+            /* ============ PAGE HEADER ============ */
+            .ac-page-title { font-weight: 700; font-size: 1.35rem; margin-bottom: .15rem; color: var(--ac-text); }
+            .ac-page-sub { color: var(--ac-text-soft); font-size: .89rem; margin: 0; }
+
+            .ac-count-badge {
+                display: inline-flex; align-items: center; gap: .45rem;
+                background: #fef3e2; color: #b45309; font-weight: 600; font-size: .85rem;
+                border-radius: 999px; padding: .5rem 1rem;
+            }
+            .ac-count-badge strong { font-family: 'JetBrains Mono', monospace; }
+
+            /* ============ STAT CARDS ============ */
+            .ac-stat-card {
+                border: 1px solid var(--ac-border); border-radius: var(--ac-radius-lg);
+                padding: 1.3rem 1.4rem; background: #fff; box-shadow: var(--ac-shadow);
+                transition: transform .18s ease, box-shadow .18s ease;
+                height: 100%;
+            }
+            .ac-stat-card:hover { transform: translateY(-4px); box-shadow: var(--ac-shadow-hover); }
+            .ac-stat-card .icon-wrap {
+                width: 44px; height: 44px; border-radius: var(--ac-radius-md);
+                display: flex; align-items: center; justify-content: center;
+                font-size: 1.2rem; margin-bottom: .9rem;
+            }
+            .ac-stat-card h3 { font-weight: 700; font-size: 1.9rem; margin: 0 0 .15rem; font-family: 'JetBrains Mono', monospace; color: var(--ac-text); }
+            .ac-stat-card p.label { margin: 0; color: var(--ac-text-soft); font-size: .84rem; font-weight: 500; }
+
+            .icon-warning { background: #fef3e2; color: #f59e0b; }
+            .icon-primary { background: var(--ac-primary-soft); color: var(--ac-primary); }
+            .icon-success { background: #e8f8ee; color: #16a34a; }
+
+            /* ============ PANEL ============ */
+            .ac-panel {
+                border: 1px solid var(--ac-border); border-radius: var(--ac-radius-lg);
+                background: #fff; box-shadow: var(--ac-shadow);
+            }
+            .ac-panel-header {
+                display: flex; align-items: center; justify-content: space-between;
+                padding: 1.15rem 1.4rem; border-bottom: 1px solid var(--ac-border); flex-wrap: wrap; gap: .6rem;
+            }
+            .ac-panel-header h5 { font-weight: 600; font-size: .98rem; margin: 0; color: var(--ac-text); }
+            .ac-panel-body { padding: 1.1rem 1.4rem 1.4rem; }
+
+            /* ============ TABLE ============ */
+            .ac-table thead th {
+                font-size: .72rem; text-transform: uppercase; letter-spacing: .06em;
+                color: var(--ac-text-soft); font-weight: 600; border-bottom: 1px solid var(--ac-border);
+                white-space: nowrap;
+            }
+            .ac-table tbody td { vertical-align: middle; font-size: .87rem; }
+            .ac-table tbody tr:hover { background: #f9fafc; }
+
+            .college-logo-img { width: 38px; height: 38px; border-radius: 9px; object-fit: cover; border: 1px solid var(--ac-border); }
+            .college-avatar {
+                width: 38px; height: 38px; border-radius: 9px;
+                background: var(--ac-primary-soft); color: var(--ac-primary);
+                display: flex; align-items: center; justify-content: center;
+                font-weight: 600; font-size: .8rem;
+            }
+            .date-cell { color: var(--ac-text-soft); font-size: .8rem; }
+
+            .btn-icon-action {
+                width: 33px; height: 33px; border-radius: var(--ac-radius-md); padding: 0;
+                display: inline-flex; align-items: center; justify-content: center; font-size: .9rem;
+            }
+
+            /* ============ EMPTY STATE ============ */
+            .ac-empty-state { text-align: center; padding: 3.5rem 1.5rem; }
+            .ac-empty-state .icon-circle {
+                width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1.1rem;
+                background: var(--ac-primary-soft); color: var(--ac-primary);
+                display: flex; align-items: center; justify-content: center; font-size: 1.9rem;
+            }
+            .ac-empty-state h5 { font-weight: 700; color: var(--ac-text); margin-bottom: .35rem; }
+            .ac-empty-state p { color: var(--ac-text-soft); font-size: .88rem; margin: 0; }
+
+            /* ============ FOOTER ============ */
+            .ac-footer { text-align: center; font-size: .82rem; color: var(--ac-text-soft); padding: 1.2rem; border-top: 1px solid var(--ac-border); background: #fff; }
+
+            /* ============ RESPONSIVE ============ */
+            @media (max-width: 991.98px) {
+                .ac-sidebar { transform: translateX(-100%); }
+                .ac-sidebar.show { transform: translateX(0); box-shadow: 20px 0 40px rgba(0,0,0,.15); }
+                .ac-main { margin-left: 0; }
+                .ac-menu-btn { display: inline-flex; }
+                .ac-search { max-width: none; }
+            }
+            @media (max-width: 575.98px) {
+                .ac-content { padding: 1rem; }
+                .ac-profile .name, .ac-profile .role { display: none; }
+            }
+            .ac-backdrop { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.4); z-index: 1035; }
+            .ac-backdrop.show { display: block; }
+        </style>
+    </head>
+    <body>
+
+        <div class="ac-backdrop" id="acBackdrop"></div>
+        {% include 'sidebar/sidebar.html' %}
+
+        <div class="ac-main">
+
+            {% include 'sidebar/navbar.html' %}
+
+            <div class="ac-content">
+
+                <!-- ============ PAGE HEADER ============ -->
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <div class="ac-page-title">Pending College Requests</div>
+                        <p class="ac-page-sub">Review and manage newly registered colleges awaiting approval.</p>
+                    </div>
+                    <span class="ac-count-badge">
+                        <i class="bi bi-hourglass-split"></i>
+                        Pending Requests: <strong>{{ pending_count|default:"0" }}</strong>
+                    </span>
+                </div>
+
+                <!-- ============ STATISTICS ============ -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="ac-stat-card">
+                            <div class="icon-wrap icon-warning"><i class="bi bi-hourglass-split"></i></div>
+                            <h3>{{ pending_count|default:"0" }}</h3>
+                            <p class="label">Pending Requests</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ac-stat-card">
+                            <div class="icon-wrap icon-primary"><i class="bi bi-calendar-plus"></i></div>
+                            <h3>{{ today_count|default:"0" }}</h3>
+                            <p class="label">Today's Registrations</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ac-stat-card">
+                            <div class="icon-wrap icon-success"><i class="bi bi-calendar3"></i></div>
+                            <h3>{{ month_count|default:"0" }}</h3>
+                            <p class="label">This Month's Registrations</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ MAIN PANEL ============ -->
+                <div class="ac-panel">
+
+                    <div class="ac-panel-header">
+                        <h5>Pending Colleges</h5>
+                    </div>
+
+                    <!-- ============ SEARCH & FILTERS ============ -->
+                    <div class="ac-panel-body pb-0">
+                        <form method="get" class="row g-2 align-items-end mb-2">
+                            <div class="col-12 col-lg-4">
+                                <label class="form-label small text-secondary fw-semibold">Search Colleges</label>
+                                <div class="position-relative">
+                                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
+                                    <input type="text" name="q" class="form-control ps-5 rounded-3" placeholder="Search by name, email or principal">
+                                </div>
+                            </div>
+                            <div class="col-6 col-lg-2">
+                                <label class="form-label small text-secondary fw-semibold">City</label>
+                                <select name="city" class="form-select rounded-3">
+                                    <option value="">All Cities</option>
+                                    {% for city in city_list %}
+                                    <option value="{{ city }}">{{ city }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6 col-lg-2">
+                                <label class="form-label small text-secondary fw-semibold">State</label>
+                                <select name="state" class="form-select rounded-3">
+                                    <option value="">All States</option>
+                                    {% for state in state_list %}
+                                    <option value="{{ state }}">{{ state }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6 col-lg-2">
+                                <label class="form-label small text-secondary fw-semibold">Registration Date</label>
+                                <input type="date" name="reg_date" class="form-control rounded-3">
+                            </div>
+                            <div class="col-6 col-lg-2 d-flex gap-2">
+                                <button type="submit" class="btn btn-primary rounded-3 flex-fill" style="background:var(--ac-primary); border-color:var(--ac-primary);">
+                                    <i class="bi bi-funnel"></i> Filter
+                                </button>
+                                <a href="?" class="btn btn-outline-secondary rounded-3" title="Reset Filters">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- ============ TABLE ============ -->
+                    <div class="ac-panel-body pt-2">
+                        {% if colleges %}
+                        <div class="table-responsive">
+                            <table class="table ac-table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>College Logo</th>
+                                        <th>College Name</th>
+                                        <th>Principal / Administrator</th>
+                                        <th>Official Email</th>
+                                        <th>Phone Number</th>
+                                        <th>City</th>
+                                        <th>Registration Date</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for college in colleges %}
+                                    <tr>
+                                        <td>
+                                            {% if college.logo %}
+                                            <img src="{{ college.logo.url }}" alt="{{ college.college_name }}" class="college-logo-img">
+                                            {% else %}
+                                            <div class="college-avatar">{{ college.college_name|slice:":2"|upper }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fw-semibold">{{ college.college_name }}</td>
+                                        <td>{{ college.admin.first_name|default:college.admin.username }}</td>
+                                        <td>{{ college.email }}</td>
+                                        <td>{{ college.phone|default:"—" }}</td>
+                                        <td>{{ college.city }}</td>
+                                        <td class="date-cell mono">{{ college.created_at|date:"d M Y" }}</td>
+                                        <td><span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-3 py-2">Pending</span></td>
+                                        <td>
+                                            <div class="d-flex justify-content-end gap-1">
+                                                <a href="{% url 'college_detail' college.id %}" class="btn btn-icon-action btn-outline-primary" title="View Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <form method="post" action="{% url 'approve_college' college.id %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-icon-action btn-outline-success" title="Approve">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="{% url 'reject_college' college.id %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-icon-action btn-outline-danger" title="Reject">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- ============ PAGINATION ============ -->
+                        <nav aria-label="Pending colleges pagination" class="d-flex justify-content-center justify-content-md-end mt-3">
+                            <ul class="pagination mb-0">
+                                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                                    <a class="page-link rounded-2 me-1" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                </li>
+                                {% for num in page_obj.paginator.page_range %}
+                                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                    <a class="page-link rounded-2 me-1" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                                {% endfor %}
+                                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                                    <a class="page-link rounded-2" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        {% else %}
+                        <!-- ============ EMPTY STATE ============ -->
+                        <div class="ac-empty-state">
+                            <div class="icon-circle"><i class="bi bi-check2-circle"></i></div>
+                            <h5>No Pending College Requests</h5>
+                            <p>All college registrations have been reviewed.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% include 'sidebar/footer.html' %}
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            const sidebar = document.getElementById('acSidebar');
+            const backdrop = document.getElementById('acBackdrop');
+            const menuBtn = document.getElementById('acMenuBtn');
+            if (menuBtn) {
+                menuBtn.addEventListener('click', function () {
+                    sidebar.classList.toggle('show');
+                    backdrop.classList.toggle('show');
+                });
+                backdrop.addEventListener('click', function () {
+                    sidebar.classList.remove('show');
+                    backdrop.classList.remove('show');
+                });
+            }
+        </script>
+
+        {% block extra_js %}{% endblock %}
+    </body>
+</html>

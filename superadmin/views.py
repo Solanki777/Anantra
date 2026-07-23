@@ -29,3 +29,16 @@ def dashboard(request):
         context,
     )
 
+def pending_colleges(request):
+    colleges = College.objects.filter(
+        status="pending").order_by("-created_at")
+
+    context = {
+        "collleges" : colleges,
+    }
+
+    return render(
+        request,
+        "superadmin/pending_colleges.html",
+        context,
+    )
