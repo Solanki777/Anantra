@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "accounts",
+    "superadmin",
     "students",    
     "colleges",
     "django.contrib.admin",
