@@ -2,7 +2,7 @@ from django.shortcuts import render
 from colleges.models import College
 
 def dashboard(request):
-    total_colleges = Colleges.objects.count()
+    total_colleges = College.objects.count()
 
     pending_colleges = College.objects.filter(
         status = "pending"
@@ -25,7 +25,7 @@ def dashboard(request):
 
     return render(
         request,
-        "superadmin/dashboard.html",
+        "dashboard.html",
         context,
     )
 
