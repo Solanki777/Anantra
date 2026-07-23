@@ -1,32 +1,25 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
-from django.contrib.auth import authenticate,login ,logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from colleges.models import College
+
 
 def register_view(request):
 
     if request.method == "POST":
-        form = RegisterForm(request.POST)
+        form = RegisterForm(request.POST, request.FILES)
 
         if form.is_valid():
+            print("✅ Form is valid")
 
-            user = form.save()
-
-            College.objects.create(
-                admin=user,
-                college_name=form.cleaned_data["college_name"],
-                email=form.cleaned_data["email"],
-                phone=form.cleaned_data["phone"],
-                address=form.cleaned_data["address"],
-                city=form.cleaned_data["city"],
-                state=form.cleaned_data["state"],
-            )
+            form.save()
+            print("✅ Form saved")
 
             messages.success(
                 request,
-                "College registered successfully."
+                "Registration submitted. Your application is under review — "
+                "you'll receive an email once your college has been approved."
             )
 
             return redirect("login")
@@ -40,14 +33,14 @@ def register_view(request):
         {"form": form}
     )
 
+
 def login_view(request):
 
-    if request.method=="POST":
+    if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
 
         user = authenticate(
-
             request,
             username=username,
             password=password
@@ -57,14 +50,17 @@ def login_view(request):
             login(request, user)
 
             return redirect("dashboard")
-        
+
         else:
             messages.error(
                 request,
-                "Invalid Username password"
+                "Invalid username or password. If your college's "
+                "registration is still pending approval, no login "
+                "credentials have been issued yet."
             )
-        
+
     return render(request, "accounts/login.html")
+
 
 @login_required
 def logout_view(request):
@@ -72,7 +68,7 @@ def logout_view(request):
 
     messages.success(
         request,
-        "you have been logged out successfully."
+        "You have been logged out successfully."
     )
 
     return redirect("login")
