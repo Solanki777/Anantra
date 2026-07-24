@@ -357,13 +357,13 @@
                                                 <a href="{% url 'college_details' college.id %}" class="btn btn-icon-action btn-outline-primary" title="View Details">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <form method="post" action="#" class="d-inline">
+                                                <form method="post" action="{% url 'approve_college' college.id %}" class="d-inline">
                                                     {% csrf_token %}
                                                     <button type="submit" class="btn btn-icon-action btn-outline-success" title="Approve">
                                                         <i class="bi bi-check-lg"></i>
                                                     </button>
                                                 </form>
-                                                <form method="post" action="#" class="d-inline">
+                                                <form method="post" action="{% url 'reject_college' college.id %}" class="d-inline">
                                                     {% csrf_token %}
                                                     <button type="submit" class="btn btn-icon-action btn-outline-danger" title="Reject">
                                                         <i class="bi bi-x-lg"></i>

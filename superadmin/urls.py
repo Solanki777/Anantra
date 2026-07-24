@@ -8,4 +8,16 @@ urlpatterns = [
     "college/<int:id>/",
     views.college_details,
     name = "college_details"),
+    path(
+        "approve/<int:id>",
+        views.approve_college,
+        name="approve_college",
+    ),
+
+    path(
+    "reject/<int:id>/",
+    views.reject_college,
+    name="reject_college",
+    )
+
 ]

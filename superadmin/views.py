@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from colleges.models import College
+from django.contrib import messages
 
 def dashboard(request):
     total_colleges = College.objects.count()
@@ -54,3 +55,27 @@ def college_details(request,id):
         "college_details.html",
         context,
     )
+
+def approve_college(request,id):
+    college = get_object_or_404(College,id=id)
+
+    college.status = "approved"
+    college.save()
+
+    messages.success(
+        request,
+        f"{college.college_name} has been approved successfully."
+    )
+    return redirect("pending_colleges")
+
+def reject_college(request,id):
+    college = get_object_or_404(College,id=id)
+
+    college.status = "rejected"
+    college.save()
+
+    messages.warning(
+        request,
+        f"{college.college_name} has been rejected."
+    )
+    return redirect("pending_colleges")
