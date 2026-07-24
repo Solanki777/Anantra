@@ -24,7 +24,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("",include("students.urls")),
     path("",include("accounts.urls")),
-    path("superadmin",include("superadmin.urls"))
+    path("superadmin/",include("superadmin.urls"))
    
 
 

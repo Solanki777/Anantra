@@ -34,11 +34,11 @@ def pending_colleges(request):
         status="pending").order_by("-created_at")
 
     context = {
-        "collleges" : colleges,
+        "colleges" : colleges,
     }
 
     return render(
         request,
-        "superadmin/pending_colleges.html",
+        "pending_colleges.html",
         context,
     )
