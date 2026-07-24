@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from colleges.models import College
 
 def dashboard(request):
@@ -40,5 +40,17 @@ def pending_colleges(request):
     return render(
         request,
         "pending_colleges.html",
+        context,
+    )
+
+def college_details(request,id):
+    college = get_object_or_404(College,id=id)
+
+    context = {
+        "college":college,
+    }
+    return render(
+        request,
+        "college_details.html",
         context,
     )

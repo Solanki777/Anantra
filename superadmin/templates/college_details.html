@@ -1,0 +1,455 @@
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>College Details | Anantra Campus</title>
+
+        <link rel="stylesheet" href="css/sidebar.css">
+
+        <!-- Bootstrap 5 CSS (CDN) -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap Icons (CDN) -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+        <!-- Google Fonts: Poppins -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+        <!-- Project Custom CSS -->
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+        {% block extra_css %}{% endblock %}
+
+        <style>
+            :root {
+                --ac-primary: #2563eb;
+                --ac-primary-dark: #1d4ed8;
+                --ac-primary-soft: #eaf0ff;
+                --ac-sidebar: #0f172a;
+                --ac-sidebar-hover: rgba(255,255,255,.06);
+                --ac-text: #1e293b;
+                --ac-text-soft: #64748b;
+                --ac-bg: #f8fafc;
+                --ac-border: #e2e8f0;
+                --ac-shadow: 0 2px 10px rgba(15, 23, 42, .05);
+                --ac-shadow-hover: 0 12px 28px rgba(15, 23, 42, .10);
+                --sidebar-w: 260px;
+                --ac-radius-lg: 16px;
+                --ac-radius-md: 12px;
+            }
+
+            * { box-sizing: border-box; }
+
+            body {
+                font-family: 'Poppins', sans-serif;
+                background: var(--ac-bg);
+                color: var(--ac-text);
+                margin: 0;
+            }
+
+            .mono { font-family: 'JetBrains Mono', monospace; }
+            a { text-decoration: none; }
+
+            /* ============ SIDEBAR / TOPBAR (shared shell) ============ */
+            .ac-sidebar {
+                position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+                background: var(--ac-sidebar); color: #cbd5e1;
+                display: flex; flex-direction: column; z-index: 1040;
+                transition: transform .25s ease;
+            }
+            .ac-sidebar .brand {
+                display: flex; align-items: center; gap: .6rem;
+                padding: 1.4rem 1.4rem 1.1rem; color: #fff; font-weight: 700;
+                font-size: 1.05rem; letter-spacing: .2px;
+            }
+            .ac-sidebar .brand .mark {
+                width: 34px; height: 34px; border-radius: 10px;
+                background: linear-gradient(135deg, var(--ac-primary), #6ea8fe);
+                display: flex; align-items: center; justify-content: center;
+                font-size: 1.1rem; flex: none;
+            }
+            .ac-nav { flex: 1; overflow-y: auto; padding-bottom: 1rem; }
+            .ac-nav .nav-link {
+                display: flex; align-items: center; gap: .75rem; color: #cbd5e1;
+                padding: .65rem 1.4rem; font-size: .89rem; font-weight: 500;
+                border-left: 3px solid transparent; transition: background .15s ease, color .15s ease;
+            }
+            .ac-nav .nav-link i { font-size: 1.05rem; width: 20px; text-align: center; }
+            .ac-nav .nav-link:hover { background: var(--ac-sidebar-hover); color: #fff; }
+            .ac-nav .nav-link.active { background: var(--ac-sidebar-hover); color: #fff; border-left-color: var(--ac-primary); }
+            .ac-sidebar-footer {
+                padding: 1rem 1.4rem 1.3rem; border-top: 1px solid rgba(255,255,255,.08);
+                font-size: .74rem; color: #64748b;
+            }
+
+            .ac-topbar {
+                position: sticky; top: 0; z-index: 1030; background: #fff;
+                border-bottom: 1px solid var(--ac-border); padding: .75rem 1.5rem;
+                display: flex; align-items: center; gap: 1rem;
+            }
+            .ac-menu-btn { display: none; border: none; background: transparent; font-size: 1.3rem; color: var(--ac-text); }
+            .ac-search { position: relative; flex: 1; max-width: 380px; }
+            .ac-search input {
+                width: 100%; border: 1px solid var(--ac-border); background: #f7f8fb;
+                border-radius: 10px; padding: .55rem .9rem .55rem 2.3rem; font-size: .87rem;
+            }
+            .ac-search input:focus {
+                outline: none; border-color: var(--ac-primary);
+                box-shadow: 0 0 0 3px rgba(37,99,235,.12); background: #fff;
+            }
+            .ac-search i { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); color: var(--ac-text-soft); font-size: .9rem; }
+            .ac-topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+            .ac-bell {
+                position: relative; width: 40px; height: 40px; border-radius: 10px;
+                border: 1px solid var(--ac-border); background: #fff;
+                display: flex; align-items: center; justify-content: center;
+                color: var(--ac-text-soft); font-size: 1.05rem;
+            }
+            .ac-bell .dot {
+                position: absolute; top: 8px; right: 9px; width: 8px; height: 8px;
+                border-radius: 50%; background: #dc3545; border: 2px solid #fff;
+            }
+            .ac-profile { display: flex; align-items: center; gap: .6rem; cursor: pointer; }
+            .ac-avatar {
+                width: 38px; height: 38px; border-radius: 10px;
+                background: linear-gradient(135deg, var(--ac-primary), #6ea8fe);
+                color: #fff; display: flex; align-items: center; justify-content: center;
+                font-weight: 600; font-size: .85rem;
+            }
+            .ac-profile .name { font-size: .84rem; font-weight: 600; line-height: 1.1; }
+            .ac-profile .role { font-size: .72rem; color: var(--ac-text-soft); }
+
+            .ac-main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
+            .ac-content { padding: 1.6rem; flex: 1; padding-bottom: 6.5rem; }
+
+            /* ============ PAGE HEADER ============ */
+            .ac-page-title { font-weight: 700; font-size: 1.35rem; margin-bottom: .15rem; color: var(--ac-text); }
+            .ac-page-sub { color: var(--ac-text-soft); font-size: .89rem; margin: 0; }
+
+            .badge-status-lg {
+                font-size: .82rem; font-weight: 600; padding: .5rem 1rem; border-radius: 999px;
+                display: inline-flex; align-items: center; gap: .4rem;
+            }
+            .badge-pending-lg { background: #fef3e2; color: #b45309; }
+            .badge-approved-lg { background: #e8f8ee; color: #16a34a; }
+            .badge-rejected-lg { background: #fdeaec; color: #dc3545; }
+
+            /* ============ CARDS ============ */
+            .ac-card {
+                border: 1px solid var(--ac-border); border-radius: var(--ac-radius-lg);
+                background: #fff; box-shadow: var(--ac-shadow);
+                transition: box-shadow .18s ease;
+            }
+            .ac-card-header {
+                padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--ac-border);
+                font-weight: 600; font-size: .95rem; color: var(--ac-text);
+                display: flex; align-items: center; gap: .6rem;
+            }
+            .ac-card-header i { color: var(--ac-primary); font-size: 1rem; }
+            .ac-card-body { padding: 1.3rem 1.4rem; }
+
+            /* ============ PROFILE CARD ============ */
+            .profile-card { padding: 1.6rem; }
+            .profile-logo {
+                width: 84px; height: 84px; border-radius: var(--ac-radius-md);
+                background: var(--ac-primary-soft); color: var(--ac-primary);
+                display: flex; align-items: center; justify-content: center;
+                font-weight: 700; font-size: 1.8rem; flex: none; object-fit: cover;
+            }
+            .profile-name { font-weight: 700; font-size: 1.25rem; margin-bottom: .2rem; color: var(--ac-text); }
+            .profile-meta { color: var(--ac-text-soft); font-size: .85rem; display: flex; flex-wrap: wrap; gap: .3rem 1rem; align-items: center; }
+            .profile-meta .sep { color: var(--ac-border); }
+
+            /* ============ FIELD ROWS ============ */
+            .field-row { padding: .8rem 0; border-bottom: 1px solid var(--ac-border); }
+            .field-row:last-child { border-bottom: none; padding-bottom: 0; }
+            .field-row:first-child { padding-top: 0; }
+            .field-label {
+                font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+                color: var(--ac-text-soft); font-weight: 600; margin-bottom: .25rem;
+            }
+            .field-value { font-size: .92rem; color: var(--ac-text); font-weight: 500; }
+            .field-value a { color: var(--ac-primary); }
+
+            /* ============ TIMELINE ============ */
+            .timeline { list-style: none; margin: 0; padding: 0; }
+            .timeline li {
+                position: relative; padding-left: 2.1rem; padding-bottom: 1.5rem;
+            }
+            .timeline li:last-child { padding-bottom: 0; }
+            .timeline li::before {
+                content: ''; position: absolute; left: 8px; top: 22px; bottom: 0;
+                width: 2px; background: var(--ac-border);
+            }
+            .timeline li:last-child::before { display: none; }
+            .timeline .dot {
+                position: absolute; left: 0; top: 2px; width: 18px; height: 18px; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center; font-size: .68rem;
+            }
+            .timeline .dot-done { background: #16a34a; color: #fff; }
+            .timeline .dot-current { background: var(--ac-primary); color: #fff; }
+            .timeline .dot-pending { background: #e2e8f0; color: var(--ac-text-soft); }
+            .timeline .t-title { font-size: .87rem; font-weight: 600; color: var(--ac-text); margin-bottom: .1rem; }
+            .timeline .t-sub { font-size: .76rem; color: var(--ac-text-soft); }
+
+            /* ============ STICKY ACTION PANEL ============ */
+            .ac-action-panel {
+                position: sticky; bottom: 0; left: 0; right: 0;
+                background: #fff; border-top: 1px solid var(--ac-border);
+                box-shadow: 0 -8px 20px rgba(15,23,42,.06);
+                padding: 1rem 1.6rem; margin: 1.6rem -1.6rem -1.6rem;
+                display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem;
+                border-radius: var(--ac-radius-lg) var(--ac-radius-lg) 0 0;
+            }
+            .ac-action-panel .btn {
+                border-radius: var(--ac-radius-md); font-weight: 600; font-size: .87rem;
+                padding: .65rem 1.3rem; display: inline-flex; align-items: center; gap: .5rem;
+            }
+
+            .ac-footer { text-align: center; font-size: .82rem; color: var(--ac-text-soft); padding: 1.2rem; border-top: 1px solid var(--ac-border); background: #fff; }
+
+            /* ============ RESPONSIVE ============ */
+            @media (max-width: 991.98px) {
+                .ac-sidebar { transform: translateX(-100%); }
+                .ac-sidebar.show { transform: translateX(0); box-shadow: 20px 0 40px rgba(0,0,0,.15); }
+                .ac-main { margin-left: 0; }
+                .ac-menu-btn { display: inline-flex; }
+                .ac-search { max-width: none; }
+            }
+            @media (max-width: 575.98px) {
+                .ac-content { padding: 1rem; padding-bottom: 8rem; }
+                .ac-profile .name, .ac-profile .role { display: none; }
+                .ac-action-panel { flex-direction: column; align-items: stretch; margin: 1rem -1rem -1rem; }
+                .ac-action-panel .btn { width: 100%; justify-content: center; }
+            }
+            .ac-backdrop { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.4); z-index: 1035; }
+            .ac-backdrop.show { display: block; }
+        </style>
+    </head>
+    <body>
+
+        <div class="ac-backdrop" id="acBackdrop"></div>
+        {% include 'sidebar/sidebar.html' %}
+
+        <div class="ac-main">
+
+            {% include 'sidebar/navbar.html' %}
+
+            <div class="ac-content">
+
+                <!-- ============ PAGE HEADER ============ -->
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <div class="ac-page-title">College Details</div>
+                        <p class="ac-page-sub">Review the college information before approving or rejecting the registration request.</p>
+                    </div>
+                    <span class="badge-status-lg badge-pending-lg">
+                        <i class="bi bi-hourglass-split"></i> Pending
+                    </span>
+                </div>
+
+                <!-- ============ PROFILE CARD ============ -->
+                <div class="ac-card profile-card mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            {% if college.logo %}
+                            <img src="{{ college.logo.url }}" alt="{{ college.college_name }}" class="profile-logo">
+                            {% else %}
+                            <div class="profile-logo">{{ college.college_name|slice:":2"|upper }}</div>
+                            {% endif %}
+                            <div>
+                                <div class="profile-name">{{ college.college_name|default:"Greenfield Institute of Technology" }}</div>
+                                <div class="profile-meta">
+                                    <span><i class="bi bi-upc-scan"></i> {{ college.college_code|default:"GIT-2026-041" }}</span>
+                                    <span class="sep">•</span>
+                                    <span class="mono"><i class="bi bi-calendar3"></i> Registered {{ college.created_at|date:"d M Y"|default:"18 Jul 2026" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="badge-status-lg badge-pending-lg d-none d-md-inline-flex">
+                            <i class="bi bi-hourglass-split"></i> Pending Approval
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ============ INFO SECTIONS + TIMELINE ============ -->
+                <div class="row g-4">
+                    <div class="col-lg-8">
+
+                        <!-- Basic Information -->
+                        <div class="ac-card mb-4">
+                            <div class="ac-card-header"><i class="bi bi-mortarboard"></i> Basic Information</div>
+                            <div class="ac-card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="field-row">
+                                            <div class="field-label">College Name</div>
+                                            <div class="field-value">{{ college.college_name|default:"Greenfield Institute of Technology" }}</div>
+                                        </div>
+                                        <div class="field-row">
+                                            <div class="field-label">College Code</div>
+                                            <div class="field-value mono">{{ college.college_code|default:"GIT-2026-041" }}</div>
+                                        </div>
+                                        <div class="field-row">
+                                            <div class="field-label">Principal / Administrator</div>
+                                            <div class="field-value">{{ college.admin.first_name|default:"Dr. Ramesh Iyer" }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="field-row">
+                                            <div class="field-label">Official Email</div>
+                                            <div class="field-value"><a href="mailto:{{ college.email }}">{{ college.email|default:"admin@greenfieldtech.edu" }}</a></div>
+                                        </div>
+                                        <div class="field-row">
+                                            <div class="field-label">Phone Number</div>
+                                            <div class="field-value">{{ college.phone|default:"+91 98765 43210" }}</div>
+                                        </div>
+                                        <div class="field-row">
+                                            <div class="field-label">Website</div>
+                                            <div class="field-value">
+                                                <a href="{{ college.website|default:'#' }}" target="_blank" rel="noopener">
+                                                    {{ college.website|default:"www.greenfieldtech.edu" }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Information -->
+                        <div class="ac-card mb-4">
+                            <div class="ac-card-header"><i class="bi bi-geo-alt"></i> Address Information</div>
+                            <div class="ac-card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="field-row">
+                                            <div class="field-label">Address</div>
+                                            <div class="field-value">{{ college.address|default:"Plot 24, Sector 7, Knowledge Park" }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="field-row">
+                                            <div class="field-label">City</div>
+                                            <div class="field-value">{{ college.city|default:"Ahmedabad" }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="field-row">
+                                            <div class="field-label">State</div>
+                                            <div class="field-value">{{ college.state|default:"Gujarat" }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="field-row">
+                                            <div class="field-label">Country</div>
+                                            <div class="field-value">{{ college.country|default:"India" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Registration Information -->
+                        <div class="ac-card">
+                            <div class="ac-card-header"><i class="bi bi-file-earmark-text"></i> Registration Information</div>
+                            <div class="ac-card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="field-row">
+                                            <div class="field-label">Registration Date</div>
+                                            <div class="field-value mono">{{ college.created_at|date:"d M Y"|default:"18 Jul 2026" }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="field-row">
+                                            <div class="field-label">Current Status</div>
+                                            <div class="field-value">
+                                                <span class="badge-status-lg badge-pending-lg" style="padding:.3rem .7rem; font-size:.76rem;">
+                                                    <i class="bi bi-hourglass-split"></i> {{ college.get_status_display|default:"Pending" }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="field-row">
+                                            <div class="field-label">Last Updated</div>
+                                            <div class="field-value mono">{{ college.updated_at|date:"d M Y, h:i A"|default:"18 Jul 2026, 10:42 AM" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ============ TIMELINE ============ -->
+                    <div class="col-lg-4">
+                        <div class="ac-card">
+                            <div class="ac-card-header"><i class="bi bi-clock-history"></i> Approval Timeline</div>
+                            <div class="ac-card-body">
+                                <ul class="timeline">
+                                    <li>
+                                        <span class="dot dot-done"><i class="bi bi-check-lg"></i></span>
+                                        <div class="t-title">Registration Submitted</div>
+                                        <div class="t-sub mono">{{ college.created_at|date:"d M Y, h:i A"|default:"18 Jul 2026, 09:15 AM" }}</div>
+                                    </li>
+                                    <li>
+                                        <span class="dot dot-current"><i class="bi bi-eye"></i></span>
+                                        <div class="t-title">Pending Review</div>
+                                        <div class="t-sub">Awaiting Super Admin verification</div>
+                                    </li>
+                                    <li>
+                                        <span class="dot dot-pending"><i class="bi bi-flag"></i></span>
+                                        <div class="t-title">Approval Pending</div>
+                                        <div class="t-sub">Final decision not yet made</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ STICKY ACTION PANEL ============ -->
+                <div class="ac-action-panel">
+                    <a href="{% url 'pending_colleges' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Pending Colleges
+                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-danger">
+                            <i class="bi bi-x-circle"></i> Reject College
+                        </a>
+                        <a href="#" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Approve College
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            {% include 'sidebar/footer.html' %}
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            const sidebar = document.getElementById('acSidebar');
+            const backdrop = document.getElementById('acBackdrop');
+            const menuBtn = document.getElementById('acMenuBtn');
+            if (menuBtn) {
+                menuBtn.addEventListener('click', function () {
+                    sidebar.classList.toggle('show');
+                    backdrop.classList.toggle('show');
+                });
+                backdrop.addEventListener('click', function () {
+                    sidebar.classList.remove('show');
+                    backdrop.classList.remove('show');
+                });
+            }
+        </script>
+
+        {% block extra_js %}{% endblock %}
+    </body>
+</html>
