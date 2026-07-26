@@ -82,6 +82,11 @@ def reject_college(request,id):
     )
     return redirect("pending_colleges")
 
+from django.shortcuts import render
+from django.core.paginator import Paginator
+from django.db.models import Q
+from colleges.models import College
+
 
 def list_colleges(request, status=None):
     colleges = College.objects.all().order_by("-created_at")
@@ -90,37 +95,21 @@ def list_colleges(request, status=None):
     if status:
         colleges = colleges.filter(status=status)
 
-    # Search
-    q = request.GET.get("q")
-    principal = request.GET.get("principal")
-    email = request.GET.get("email")
-    state = request.GET.get("state")
-    city = request.GET.get("city")
-    reg_date = request.GET.get("reg_date")
+    # Single Search
+    search = request.GET.get("search", "").strip()
 
-    if q:
+    if search:
         colleges = colleges.filter(
-            Q(college_name__icontains=q) |
-            Q(college_code__icontains=q)
-        )
-
-    if principal:
-        colleges = colleges.filter(
-            Q(admin__first_name__icontains=principal) |
-            Q(admin__username__icontains=principal)
-        )
-
-    if email:
-        colleges = colleges.filter(email__icontains=email)
-
-    if state:
-        colleges = colleges.filter(state=state)
-
-    if city:
-        colleges = colleges.filter(city=city)
-
-    if reg_date:
-        colleges = colleges.filter(created_at__date=reg_date)
+            Q(college_name__icontains=search) |
+            Q(college_code__icontains=search) |
+            Q(admin__first_name__icontains=search) |
+            Q(admin__last_name__icontains=search) |
+            Q(admin__username__icontains=search) |
+            Q(email__icontains=search) |
+            Q(state__icontains=search) |
+            Q(city__icontains=search) |
+            Q(status__icontains=search)
+        ).distinct()
 
     # Pagination
     paginator = Paginator(colleges, 10)
@@ -142,6 +131,9 @@ def list_colleges(request, status=None):
 
         "colleges": colleges,
 
+        # Keep search value in the input
+        "search": search,
+
         # Dashboard cards
         "total_colleges": College.objects.count(),
         "pending_count": College.objects.filter(status="pending").count(),
@@ -149,7 +141,7 @@ def list_colleges(request, status=None):
         "rejected_count": College.objects.filter(status="rejected").count(),
         "suspended_count": College.objects.filter(status="suspended").count(),
 
-        # Filter dropdowns
+        # Dropdowns (optional if you removed them)
         "state_list": College.objects.values_list(
             "state", flat=True
         ).distinct().order_by("state"),
@@ -164,4 +156,3 @@ def list_colleges(request, status=None):
         "colleges_list.html",
         context,
     )
-   

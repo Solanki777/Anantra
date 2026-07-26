@@ -337,71 +337,44 @@
                     <div class="ac-panel-header">
                         <h5>{{ page_title|default:"All Colleges" }}</h5>
                     </div>
+                    <!-- ============ SEARCH ============ -->
+                <div class="ac-panel-body pb-0">
+                    <form method="get" class="row g-2 align-items-end mb-2">
+                        <div class="col-lg-8 col-md-8">
+                            <label class="form-label small text-secondary fw-semibold">
+                                Search College
+                            </label>
+                            <div class="position-relative">
+                                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
+                                <input type="text"
+                                    name="search"
+                                    value="{{ request.GET.search }}"
+                                    class="form-control ps-5 rounded-3"
+                                    placeholder="Search by college, principal, email, state, city, status">
+                            </div>
+                        </div>
 
-                    <!-- ============ SEARCH & FILTERS ============ -->
-                    <div class="ac-panel-body pb-0">
-                        <form method="get" class="row g-2 align-items-end mb-2">
-                            <div class="col-12 col-lg-3">
-                                <label class="form-label small text-secondary fw-semibold">College Name</label>
-                                <div class="position-relative">
-                                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
-                                    <input type="text" name="q" value="{{ request.GET.q }}" class="form-control ps-5 rounded-3" placeholder="College name">
-                                </div>
-                            </div>
-                            <div class="col-6 col-lg-2">
-                                <label class="form-label small text-secondary fw-semibold">Principal</label>
-                                <input type="text" name="principal" value="{{ request.GET.principal }}" class="form-control rounded-3" placeholder="Principal">
-                            </div>
-                            <div class="col-6 col-lg-2">
-                                <label class="form-label small text-secondary fw-semibold">Email</label>
-                                <input type="text" name="email" value="{{ request.GET.email }}" class="form-control rounded-3" placeholder="Email">
-                            </div>
-                            <div class="col-6 col-lg-2">
-                                <label class="form-label small text-secondary fw-semibold">Status</label>
-                                <select name="status" class="form-select rounded-3">
-                                    <option value="">All Status</option>
-                                    <option value="pending" {% if current_status == 'pending' %}selected{% endif %}>Pending</option>
-                                    <option value="approved" {% if current_status == 'approved' %}selected{% endif %}>Approved</option>
-                                    <option value="rejected" {% if current_status == 'rejected' %}selected{% endif %}>Rejected</option>
-                                    <option value="suspended" {% if current_status == 'suspended' %}selected{% endif %}>Suspended</option>
-                                </select>
-                            </div>
-                            <div class="col-6 col-lg-2">
-                                <label class="form-label small text-secondary fw-semibold">State</label>
-                                <select name="state" class="form-select rounded-3">
-                                    <option value="">All States</option>
-                                    {% for state in state_list %}
-                                    <option value="{{ state }}" {% if request.GET.state == state %}selected{% endif %}>{{ state }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-6 col-lg-2">
-                                <label class="form-label small text-secondary fw-semibold">City</label>
-                                <select name="city" class="form-select rounded-3">
-                                    <option value="">All Cities</option>
-                                    {% for city in city_list %}
-                                    <option value="{{ city }}" {% if request.GET.city == city %}selected{% endif %}>{{ city }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-6 col-lg-2">
-                                <label class="form-label small text-secondary fw-semibold">Registration Date</label>
-                                <input type="date" name="reg_date" value="{{ request.GET.reg_date }}" class="form-control rounded-3">
-                            </div>
-                            <div class="col-12 col-lg-4 d-flex gap-2">
-                                <button type="submit" class="btn btn-primary rounded-3 flex-fill" style="background:var(--ac-primary); border-color:var(--ac-primary);">
-                                    <i class="bi bi-search"></i> Search
-                                </button>
-                                <a href="{% url 'colleges_list' %}" class="btn btn-outline-secondary rounded-3" title="Reset Filters">
-                                    <i class="bi bi-arrow-counterclockwise"></i> Reset
-                                </a>
-                                <a href="?{{ request.GET.urlencode }}&export=csv" class="btn btn-outline-primary rounded-3" title="Export">
-                                    <i class="bi bi-download"></i> Export
-                                </a>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="col-lg-4 col-md-4 d-flex gap-2">
+                            <button type="submit"
+                                    class="btn btn-primary flex-fill rounded-3"
+                                    style="background:var(--ac-primary); border-color:var(--ac-primary);">
+                                <i class="bi bi-search"></i> Search
+                            </button>
 
+                            <a href="{% url 'colleges_list' %}"
+                            class="btn btn-outline-secondary rounded-3">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </a>
+
+                            <a href="?{{ request.GET.urlencode }}&export=csv"
+                            class="btn btn-outline-primary rounded-3">
+                                <i class="bi bi-download"></i> Export
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                   
                     <!-- ============ TABLE ============ -->
                     <div class="ac-panel-body pt-2">
                         {% if colleges %}
