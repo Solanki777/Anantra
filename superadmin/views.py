@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from colleges.models import College
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
 def dashboard(request):
     total_colleges = College.objects.count()
@@ -80,19 +82,86 @@ def reject_college(request,id):
     )
     return redirect("pending_colleges")
 
-def approved_colleges(request):
-    colleges = College.objects.filter(
-        status = "approved"
-    ).order_by("-created_at")
+
+def list_colleges(request, status=None):
+    colleges = College.objects.all().order_by("-created_at")
+
+    # Filter by status
+    if status:
+        colleges = colleges.filter(status=status)
+
+    # Search
+    q = request.GET.get("q")
+    principal = request.GET.get("principal")
+    email = request.GET.get("email")
+    state = request.GET.get("state")
+    city = request.GET.get("city")
+    reg_date = request.GET.get("reg_date")
+
+    if q:
+        colleges = colleges.filter(
+            Q(college_name__icontains=q) |
+            Q(college_code__icontains=q)
+        )
+
+    if principal:
+        colleges = colleges.filter(
+            Q(admin__first_name__icontains=principal) |
+            Q(admin__username__icontains=principal)
+        )
+
+    if email:
+        colleges = colleges.filter(email__icontains=email)
+
+    if state:
+        colleges = colleges.filter(state=state)
+
+    if city:
+        colleges = colleges.filter(city=city)
+
+    if reg_date:
+        colleges = colleges.filter(created_at__date=reg_date)
+
+    # Pagination
+    paginator = Paginator(colleges, 10)
+    page = request.GET.get("page")
+    colleges = paginator.get_page(page)
+
+    # Dynamic page title
+    titles = {
+        None: "All Colleges",
+        "pending": "Pending Colleges",
+        "approved": "Approved Colleges",
+        "rejected": "Rejected Colleges",
+        "suspended": "Suspended Colleges",
+    }
 
     context = {
-        "page_title":"Approved Colleges",
-        "collegs":colleges,
+        "page_title": titles.get(status, "All Colleges"),
+        "current_status": status if status else "all",
+
+        "colleges": colleges,
+
+        # Dashboard cards
+        "total_colleges": College.objects.count(),
+        "pending_count": College.objects.filter(status="pending").count(),
+        "approved_count": College.objects.filter(status="approved").count(),
+        "rejected_count": College.objects.filter(status="rejected").count(),
+        "suspended_count": College.objects.filter(status="suspended").count(),
+
+        # Filter dropdowns
+        "state_list": College.objects.values_list(
+            "state", flat=True
+        ).distinct().order_by("state"),
+
+        "city_list": College.objects.values_list(
+            "city", flat=True
+        ).distinct().order_by("city"),
     }
 
     return render(
         request,
-        "approved_colleges",
+        "colleges_list.html",
         context,
     )
-
+   

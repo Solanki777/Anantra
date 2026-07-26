@@ -20,11 +20,12 @@ urlpatterns = [
     name="reject_college",
     ),
 
-    path(
-        "approved_colleges/",
-        views.approved_colleges,
-        name="approved_colleges",
+    path("colleges/", views.list_colleges, name="colleges_list"),
 
-    )
+    path(
+        "colleges/<str:status>/",
+        views.list_colleges,
+        name="colleges_list_status",
+    ),
 
 ]
