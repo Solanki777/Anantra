@@ -1,28 +1,173 @@
 
-        <!-- ============ SIDEBAR ============ -->
-        <aside class="ac-sidebar" id="acSidebar">
-            <div class="brand">
-                <span class="mark">🏫</span>
-                <span>Anantra Campus</span>
-            </div>
+<style>
+    :root {
+        --ac-primary: #2563eb;
+        --ac-sidebar: #0f172a;
+        --ac-sidebar-hover: rgba(255,255,255,.06);
+        --sidebar-w: 260px;
+    }
 
-            <div class="ac-nav-section-label">Overview</div>
-            <nav class="ac-nav">
-                <a href="{% url 'superadmin_dashboard' %}"  class="nav-link active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
-                <a href="{% url 'colleges_list' %}" class="nav-link"><i class="bi bi-mortarboard"></i> Colleges</a>
-                <a href="{% url 'pending_colleges' %}" class="nav-link"><i class="bi bi-hourglass-split"></i> Pending Approvals</a>
+    /* ============ SIDEBAR ============ */
+    .ac-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: var(--sidebar-w);
+        background: var(--ac-sidebar);
+        color: #cbd5e1;
+        display: flex;
+        flex-direction: column;
+        z-index: 1040;
+        transition: transform .25s ease;
+    }
 
+    .ac-sidebar .brand {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        padding: 1.4rem 1.4rem 1.1rem;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.05rem;
+        letter-spacing: .2px;
+    }
 
-                <div class="ac-nav-section-label">Insights</div>
-                <a href="#" class="nav-link"><i class="bi bi-bar-chart-line"></i> Reports</a>
-            
+    .ac-sidebar .brand .mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--ac-primary), #6ea8fe);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex: none;
+    }
 
-                <div class="ac-nav-section-label">System</div>
-    
-                <a href="#" class="nav-link"><i class="bi bi-box-arrow-right"></i> Logout</a>
-            </nav>
+    .ac-nav-section-label {
+        text-transform: uppercase;
+        font-size: .68rem;
+        letter-spacing: .09em;
+        color: #64748b;
+        padding: .4rem 1.4rem;
+        margin-top: .5rem;
+    }
 
-            <div class="ac-sidebar-footer">
-                Super Admin Console<br>v1.0
-            </div>
-        </aside>
+    .ac-nav {
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 1rem;
+    }
+
+    .ac-nav .nav-link {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        color: #cbd5e1;
+        padding: .65rem 1.4rem;
+        font-size: .89rem;
+        font-weight: 500;
+        border-left: 3px solid transparent;
+        transition: background .15s ease, color .15s ease;
+    }
+
+    .ac-nav .nav-link i { font-size: 1.05rem; width: 20px; text-align: center; }
+
+    .ac-nav .nav-link:hover {
+        background: var(--ac-sidebar-hover);
+        color: #fff;
+    }
+
+    .ac-nav .nav-link.active {
+        background: var(--ac-sidebar-hover);
+        color: #fff;
+        border-left-color: var(--ac-primary);
+    }
+
+    .ac-sidebar-footer {
+        padding: 1rem 1.4rem 1.3rem;
+        border-top: 1px solid rgba(255,255,255,.08);
+        font-size: .74rem;
+        color: #64748b;
+    }
+
+    /* ============ MOBILE BACKDROP ============ */
+    .ac-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15,23,42,.4);
+        z-index: 1035;
+    }
+    .ac-backdrop.show { display: block; }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 991.98px) {
+        .ac-sidebar { transform: translateX(-100%); }
+        .ac-sidebar.show { transform: translateX(0); box-shadow: 20px 0 40px rgba(0,0,0,.15); }
+    }
+</style>
+
+<div class="ac-backdrop" id="acBackdrop"></div>
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="ac-sidebar" id="acSidebar">
+    <div class="brand">
+        <span class="mark">🏫</span>
+        <span>Anantra Campus</span>
+    </div>
+
+    <div class="ac-nav-section-label">Overview</div>
+    <nav class="ac-nav">
+        <a href="{% url 'superadmin_dashboard' %}" class="nav-link"><i class="bi bi-mortarboard"></i> Dashboard</a>
+        <a href="{% url 'colleges_list' %}" class="nav-link"><i class="bi bi-mortarboard"></i> Colleges</a>
+        <a href="{% url 'pending_colleges' %}" class="nav-link"><i class="bi bi-hourglass-split"></i> Pending Approvals</a>
+
+        <div class="ac-nav-section-label">Insights</div>
+        <a href="#" class="nav-link"><i class="bi bi-bar-chart-line"></i> Reports</a>
+
+        <div class="ac-nav-section-label">System</div>
+        <a href="#" class="nav-link"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </nav>
+
+    <div class="ac-sidebar-footer">
+        Super Admin Console<br>v1.0
+    </div>
+</aside>
+
+<script>
+    (function () {
+        var sidebar = document.getElementById('acSidebar');
+        var backdrop = document.getElementById('acBackdrop');
+        var menuBtn = document.getElementById('acMenuBtn');
+
+        function openSidebar() {
+            sidebar.classList.add('show');
+            backdrop.classList.add('show');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.contains('show') ? closeSidebar() : openSidebar();
+        }
+
+        // Menu button lives in the topbar; guard in case it isn't present yet.
+        if (menuBtn) {
+            menuBtn.addEventListener('click', toggleSidebar);
+        }
+
+        backdrop.addEventListener('click', closeSidebar);
+
+        // Close sidebar automatically if the viewport is resized back to desktop.
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 991.98) {
+                closeSidebar();
+            }
+        });
+    })();
+</script>
