@@ -79,3 +79,20 @@ def reject_college(request,id):
         f"{college.college_name} has been rejected."
     )
     return redirect("pending_colleges")
+
+def approved_colleges(request):
+    colleges = College.objects.filter(
+        status = "approved"
+    ).order_by("-created_at")
+
+    context = {
+        "page_title":"Approved Colleges",
+        "collegs":colleges,
+    }
+
+    return render(
+        request,
+        "approved_colleges",
+        context,
+    )
+
