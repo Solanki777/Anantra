@@ -3,9 +3,13 @@ from colleges.models import College
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.conf import settings
 from django.contrib.auth import authenticate,login ,logout
-from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from .decorators import superadmin_required
+from django.contrib.auth.models import User
+import secrets
+import string
 
 
 def login_view(request):
@@ -97,20 +101,58 @@ def college_details(request,id):
         context,
     )
 
-@superadmin_required
-def approve_college(request,id):
-   
-    
-    college = get_object_or_404(College,id=id)
 
+
+
+@superadmin_required
+def approve_college(request, id):
+    college = get_object_or_404(College, id=id)
+    user = college.admin
+
+    # Generate a temporary password
+    chars = string.ascii_letters + string.digits + "@#$%!"
+    password = "".join(secrets.choice(chars) for _ in range(10))
+
+    # Use email as username
+    user.username = user.email
+    user.set_password(password)
+    user.is_active = True
+    user.save()
+
+    # Update college status
     college.status = "approved"
     college.save()
 
+    # Send login credentials
+    send_mail(
+        subject="College Registration Approved",
+        message=f"""
+Dear {college.college_name},
+
+Congratulations! Your college registration has been approved.
+
+Your login credentials are:
+
+Email: {user.email}
+Password: {password}
+
+Please log in and change your password after your first login.
+
+Regards,
+InterEdu Team
+""",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        fail_silently=False,
+    )
+
     messages.success(
         request,
-        f"{college.college_name} has been approved successfully."
+        f"{college.college_name} has been approved successfully. Login credentials have been sent to {user.email}."
     )
+
     return redirect("pending_colleges")
+
 
 
 @superadmin_required

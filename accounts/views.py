@@ -72,3 +72,5 @@ def logout_view(request):
     )
 
     return redirect("login")
+
+

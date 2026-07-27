@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 
 from colleges.models import College
 
-
 class RegisterForm(forms.ModelForm):
     """
     College registration form.
@@ -45,6 +44,7 @@ class RegisterForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
+        user.username = self.cleaned_data["email"] 
         user.email = self.cleaned_data["email"]
         # No password collected at signup — locked until the college is
         # approved and a temporary password is issued.
