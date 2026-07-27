@@ -5,12 +5,11 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth import authenticate,login ,logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from .decorators import superadmin_required
 
 
 def login_view(request):
-    if request.user.is_authenticated:
-        return redirect("superadmin_dashboard")
+   
 
     if request.method == "POST":
         username = request.POST.get("username")
@@ -30,16 +29,16 @@ def login_view(request):
 
     return render(request,"login.html")
 
-@login_required
+@superadmin_required
 def logout_view(request):
     logout(request)
     return redirect("super_admin_login")
 
 
-@login_required
+@superadmin_required
 def dashboard(request):
-    if not request.user.is_superuser:
-        return HttpResponseForbidden("Access Denied")
+   
+    
     total_colleges = College.objects.count()
 
     pending_colleges = College.objects.filter(
@@ -67,8 +66,9 @@ def dashboard(request):
         context,
     )
 
-@login_required
+@superadmin_required
 def pending_colleges(request):
+
     colleges = College.objects.filter(
         status="pending").order_by("-created_at")
 
@@ -82,8 +82,10 @@ def pending_colleges(request):
         context,
     )
 
-@login_required
+@superadmin_required
 def college_details(request,id):
+   
+    
     college = get_object_or_404(College,id=id)
 
     context = {
@@ -95,8 +97,10 @@ def college_details(request,id):
         context,
     )
 
-@login_required
+@superadmin_required
 def approve_college(request,id):
+   
+    
     college = get_object_or_404(College,id=id)
 
     college.status = "approved"
@@ -108,8 +112,10 @@ def approve_college(request,id):
     )
     return redirect("pending_colleges")
 
-@login_required
+
+@superadmin_required
 def reject_college(request,id):
+    
     college = get_object_or_404(College,id=id)
 
     college.status = "rejected"
@@ -123,8 +129,9 @@ def reject_college(request,id):
 
 
 
-@login_required
+@superadmin_required
 def list_colleges(request, status=None):
+   
     colleges = College.objects.all().order_by("-created_at")
 
     # Filter by status
