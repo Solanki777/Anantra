@@ -1,0 +1,528 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Login | EduTrack</title>
+
+    <!-- Bootstrap 5 CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --et-primary: #2563eb;
+            --et-primary-dark: #1d4ed8;
+            --et-indigo: #4f46e5;
+            --et-text: #1e293b;
+            --et-text-soft: #64748b;
+            --et-border: #e2e8f0;
+            --et-bg-soft: #f8fafc;
+            --et-shadow: 0 2px 10px rgba(15, 23, 42, .05);
+            --et-shadow-hover: 0 20px 45px rgba(37, 99, 235, .16);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--et-text);
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 45%, #e8f0ff 100%);
+        }
+
+        /* ============ PAGE SHELL ============ */
+        .et-shell {
+            min-height: 100vh;
+            display: flex;
+            align-items: stretch;
+        }
+
+        /* ============ LEFT PANEL (desktop only) ============ */
+        .et-left {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 4.5rem;
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            background: linear-gradient(160deg, var(--et-indigo) 0%, var(--et-primary) 55%, #3b82f6 100%);
+        }
+
+        .et-left::before,
+        .et-left::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,.08);
+        }
+        .et-left::before { width: 340px; height: 340px; top: -90px; right: -90px; }
+        .et-left::after { width: 220px; height: 220px; bottom: -70px; left: -60px; background: rgba(255,255,255,.06); }
+
+        .et-brand-mark {
+            width: 62px;
+            height: 62px;
+            border-radius: 16px;
+            background: rgba(255,255,255,.16);
+            border: 1px solid rgba(255,255,255,.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            margin-bottom: 1.6rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .et-left h1 {
+            font-weight: 800;
+            font-size: 2.4rem;
+            margin: 0 0 .35rem;
+            letter-spacing: .2px;
+        }
+
+        .et-left h2 {
+            font-weight: 600;
+            font-size: 1.15rem;
+            margin: 0 0 1.1rem;
+            color: rgba(255,255,255,.92);
+        }
+
+        .et-left p {
+            font-size: .95rem;
+            line-height: 1.7;
+            color: rgba(255,255,255,.82);
+            max-width: 420px;
+            margin-bottom: 2.5rem;
+        }
+
+        .et-illustration {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            max-width: 420px;
+        }
+
+        .et-illustration .tile {
+            flex: 1 1 120px;
+            background: rgba(255,255,255,.10);
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 14px;
+            padding: 1rem;
+            backdrop-filter: blur(3px);
+        }
+
+        .et-illustration .tile i {
+            font-size: 1.5rem;
+            margin-bottom: .5rem;
+            display: block;
+        }
+
+        .et-illustration .tile span {
+            font-size: .78rem;
+            font-weight: 500;
+            color: rgba(255,255,255,.88);
+            display: block;
+        }
+
+        @media (min-width: 992px) {
+            .et-left { display: flex; }
+        }
+
+        /* ============ RIGHT PANEL ============ */
+        .et-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.25rem;
+        }
+
+        .et-login-card {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 20px;
+            border: 1px solid var(--et-border);
+            box-shadow: var(--et-shadow);
+            padding: 2.4rem 2.2rem 2rem;
+            transition: box-shadow .25s ease, transform .25s ease;
+            animation: et-fade-in .5s ease both;
+        }
+
+        .et-login-card:hover {
+            box-shadow: var(--et-shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        @keyframes et-fade-in {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .et-mobile-brand {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            margin-bottom: 1.6rem;
+        }
+        .et-mobile-brand .mark {
+            width: 44px; height: 44px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--et-primary), var(--et-indigo));
+            color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+            flex: none;
+        }
+        .et-mobile-brand .name { font-weight: 700; font-size: 1.15rem; color: var(--et-text); line-height: 1.1; }
+        .et-mobile-brand .tag { font-size: .78rem; color: var(--et-text-soft); font-weight: 500; }
+
+        @media (min-width: 992px) {
+            .et-mobile-brand { display: none; }
+        }
+
+        .et-form-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: .3rem;
+            color: var(--et-text);
+        }
+        .et-form-sub {
+            font-size: .87rem;
+            color: var(--et-text-soft);
+            margin-bottom: 1.6rem;
+        }
+
+        .et-input-group {
+            position: relative;
+            margin-bottom: 1.1rem;
+        }
+
+        .et-input-group label {
+            font-size: .82rem;
+            font-weight: 600;
+            color: var(--et-text);
+            margin-bottom: .4rem;
+            display: inline-block;
+        }
+
+        .et-input-wrap { position: relative; }
+
+        .et-input-wrap i.et-leading-icon {
+            position: absolute;
+            left: .95rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--et-text-soft);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .et-input-wrap .form-control {
+            padding: .7rem .9rem .7rem 2.6rem;
+            border-radius: 12px;
+            border: 1px solid var(--et-border);
+            font-size: .9rem;
+            background: var(--et-bg-soft);
+            transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
+        }
+
+        .et-input-wrap .form-control:focus {
+            outline: none;
+            border-color: var(--et-primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,.14);
+            background: #fff;
+        }
+
+        .et-input-wrap .form-control.is-invalid {
+            border-color: #dc3545;
+            background-image: none;
+        }
+
+        .et-toggle-password {
+            position: absolute;
+            right: .85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: var(--et-text-soft);
+            font-size: 1rem;
+            cursor: pointer;
+            padding: .2rem .3rem;
+        }
+        .et-toggle-password:hover { color: var(--et-primary); }
+        .et-toggle-password:focus-visible { outline: 2px solid var(--et-primary); outline-offset: 2px; border-radius: 6px; }
+
+        .et-row-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.4rem;
+            font-size: .85rem;
+        }
+
+        .et-row-between .form-check-label { color: var(--et-text-soft); }
+
+        .et-forgot-link { color: var(--et-primary); font-weight: 500; text-decoration: none; }
+        .et-forgot-link:hover { text-decoration: underline; }
+
+        .et-submit-btn {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: .75rem 1rem;
+            font-weight: 600;
+            font-size: .93rem;
+            background: linear-gradient(135deg, var(--et-primary), var(--et-indigo));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .55rem;
+            transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+            box-shadow: 0 10px 20px rgba(37,99,235,.22);
+        }
+        .et-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 14px 26px rgba(37,99,235,.28); color:#fff; }
+        .et-submit-btn:active { transform: translateY(0); }
+        .et-submit-btn:disabled { opacity: .75; cursor: not-allowed; transform: none; }
+
+        .et-spinner {
+            display: none;
+            width: 1rem;
+            height: 1rem;
+            border: .16rem solid rgba(255,255,255,.5);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: et-spin .7s linear infinite;
+        }
+        @keyframes et-spin { to { transform: rotate(360deg); } }
+
+        .et-footer {
+            text-align: center;
+            margin-top: 1.8rem;
+            font-size: .78rem;
+            color: var(--et-text-soft);
+            line-height: 1.5;
+        }
+
+        .et-alert {
+            border-radius: 12px;
+            font-size: .85rem;
+            border: none;
+        }
+
+        .et-secure-note {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            justify-content: center;
+            font-size: .76rem;
+            color: var(--et-text-soft);
+            margin-top: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="et-shell">
+
+        <!-- ============ LEFT BRANDING PANEL (desktop) ============ -->
+        <div class="et-left">
+            <div class="et-brand-mark">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <h1>EduTrack</h1>
+            <h2>Super Admin Portal</h2>
+            <p>
+                Manage colleges, approve registrations, monitor dashboards,
+                and securely administer the EduTrack platform.
+            </p>
+
+            <!-- Simple illustration placeholder built from Bootstrap Icons -->
+            <div class="et-illustration">
+                <div class="tile">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>Colleges</span>
+                </div>
+                <div class="tile">
+                    <i class="bi bi-hourglass-split"></i>
+                    <span>Approvals</span>
+                </div>
+                <div class="tile">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span>Dashboards</span>
+                </div>
+                <div class="tile">
+                    <i class="bi bi-shield-lock"></i>
+                    <span>Secure Access</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ RIGHT LOGIN PANEL ============ -->
+        <div class="et-right">
+            <div class="et-login-card">
+
+                <!-- Brand shown only on mobile / tablet -->
+                <div class="et-mobile-brand">
+                    <div class="mark"><i class="bi bi-mortarboard-fill"></i></div>
+                    <div>
+                        <div class="name">EduTrack</div>
+                        <div class="tag">Super Admin Portal</div>
+                    </div>
+                </div>
+
+                <div class="et-form-title">Sign in to your account</div>
+                <p class="et-form-sub">Enter your Super Admin credentials to continue.</p>
+
+                <!-- ============ DJANGO MESSAGES ============ -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert et-alert
+                            {% if message.tags == 'error' %}alert-danger
+                            {% elif message.tags == 'success' %}alert-success
+                            {% elif message.tags == 'warning' %}alert-warning
+                            {% else %}alert-info{% endif %}
+                            alert-dismissible fade show" role="alert">
+                            <i class="bi
+                                {% if message.tags == 'error' %}bi-x-circle
+                                {% elif message.tags == 'success' %}bi-check-circle
+                                {% elif message.tags == 'warning' %}bi-exclamation-triangle
+                                {% else %}bi-info-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- ============ LOGIN FORM ============ -->
+                <form method="POST" action="" id="etLoginForm" novalidate>
+                    {% csrf_token %}
+
+                    <div class="et-input-group">
+                        <label for="id_username">Username</label>
+                        <div class="et-input-wrap">
+                            <i class="bi bi-person-fill et-leading-icon"></i>
+                            <input
+                                type="text"
+                                name="username"
+                                id="id_username"
+                                class="form-control"
+                                placeholder="Enter your username"
+                                autocomplete="username"
+                                autofocus
+                                required
+                                aria-required="true">
+                        </div>
+                    </div>
+
+                    <div class="et-input-group">
+                        <label for="id_password">Password</label>
+                        <div class="et-input-wrap">
+                            <i class="bi bi-lock-fill et-leading-icon"></i>
+                            <input
+                                type="password"
+                                name="password"
+                                id="id_password"
+                                class="form-control"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                                aria-required="true">
+                            <button type="button" class="et-toggle-password" id="etTogglePassword" aria-label="Show password" aria-pressed="false">
+                                <i class="bi bi-eye" id="etToggleIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="et-row-between">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="etRememberMe" name="remember_me">
+                            <label class="form-check-label" for="etRememberMe">Remember me</label>
+                        </div>
+                        <a href="#" class="et-forgot-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="et-submit-btn" id="etSubmitBtn">
+                        <span class="et-spinner" id="etSpinner" aria-hidden="true"></span>
+                        <i class="bi bi-box-arrow-in-right" id="etSubmitIcon"></i>
+                        <span id="etSubmitLabel">Sign In</span>
+                    </button>
+
+                    <div class="et-secure-note">
+                        <i class="bi bi-shield-check"></i>
+                        Access restricted to authorized Super Admins only
+                    </div>
+                </form>
+
+                <div class="et-footer">
+                    &copy; 2026 EduTrack<br>
+                    Student Management System
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap Bundle (for alert dismiss) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // ============ PASSWORD SHOW/HIDE TOGGLE ============
+        const toggleBtn = document.getElementById('etTogglePassword');
+        const toggleIcon = document.getElementById('etToggleIcon');
+        const passwordInput = document.getElementById('id_password');
+
+        toggleBtn.addEventListener('click', function () {
+            const isHidden = passwordInput.type === 'password';
+            passwordInput.type = isHidden ? 'text' : 'password';
+            toggleIcon.classList.toggle('bi-eye', !isHidden);
+            toggleIcon.classList.toggle('bi-eye-slash', isHidden);
+            toggleBtn.setAttribute('aria-pressed', String(isHidden));
+            toggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+        });
+
+        // ============ LOADING SPINNER ON SUBMIT ============
+        const form = document.getElementById('etLoginForm');
+        const submitBtn = document.getElementById('etSubmitBtn');
+        const spinner = document.getElementById('etSpinner');
+        const submitIcon = document.getElementById('etSubmitIcon');
+        const submitLabel = document.getElementById('etSubmitLabel');
+
+        form.addEventListener('submit', function (e) {
+            // Basic HTML5 validation gate before showing the spinner
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                form.classList.add('was-validated');
+                return;
+            }
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            submitIcon.style.display = 'none';
+            submitLabel.textContent = 'Signing In...';
+        });
+
+        // ============ ENTER KEY SUBMITS FORM ============
+        // (native form behavior already supports this; kept explicit for clarity
+        // and to guarantee it works even if inputs are dynamically added later)
+        form.querySelectorAll('input').forEach(function (input) {
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    form.requestSubmit ? form.requestSubmit() : form.submit();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

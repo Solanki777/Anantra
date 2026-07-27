@@ -1,10 +1,45 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from colleges.models import College
 from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.auth import authenticate,login ,logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("superadmin_dashboard")
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(
+            request,
+            username = username,
+            password = password
+        )
+
+        if user and user.is_superuser:
+            login(request,user)
+            return redirect("superadmin_dashboard")
+
+        messages.error(request,"Invalid Super Admin Credentilas.")
+
+    return render(request,"login.html")
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect("super_admin_login")
+
+
+@login_required
 def dashboard(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("Access Denied")
     total_colleges = College.objects.count()
 
     pending_colleges = College.objects.filter(
@@ -32,6 +67,7 @@ def dashboard(request):
         context,
     )
 
+@login_required
 def pending_colleges(request):
     colleges = College.objects.filter(
         status="pending").order_by("-created_at")
@@ -46,6 +82,7 @@ def pending_colleges(request):
         context,
     )
 
+@login_required
 def college_details(request,id):
     college = get_object_or_404(College,id=id)
 
@@ -58,6 +95,7 @@ def college_details(request,id):
         context,
     )
 
+@login_required
 def approve_college(request,id):
     college = get_object_or_404(College,id=id)
 
@@ -70,6 +108,7 @@ def approve_college(request,id):
     )
     return redirect("pending_colleges")
 
+@login_required
 def reject_college(request,id):
     college = get_object_or_404(College,id=id)
 
@@ -82,12 +121,9 @@ def reject_college(request,id):
     )
     return redirect("pending_colleges")
 
-from django.shortcuts import render
-from django.core.paginator import Paginator
-from django.db.models import Q
-from colleges.models import College
 
 
+@login_required
 def list_colleges(request, status=None):
     colleges = College.objects.all().order_by("-created_at")
 
