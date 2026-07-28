@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Minimal additions on top of Bootstrap utilities — no external CSS frameworks used. */
+
+    .cv-card {
+        border: none;
+        border-radius: 16px;
+    }
+
+    .cv-logo-wrap {
+        width: 88px;
+        height: 88px;
+        border-radius: 18px;
+        object-fit: cover;
+        flex: none;
+    }
+
+    .cv-logo-placeholder {
+        width: 88px;
+        height: 88px;
+        border-radius: 18px;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        flex: none;
+    }
+
+    .cv-info-label {
+        font-size: .74rem;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: #6c757d;
+        font-weight: 600;
+        margin-bottom: .15rem;
+    }
+
+    .cv-info-value {
+        font-size: .93rem;
+        font-weight: 500;
+        word-break: break-word;
+    }
+
+    .cv-info-value.text-muted-italic {
+        color: #94a3b8;
+        font-style: italic;
+        font-weight: 400;
+    }
+
+    /* ============ TIMELINE ============ */
+    .cv-timeline {
+        position: relative;
+        padding-left: 2.4rem;
+    }
+
+    .cv-timeline::before {
+        content: "";
+        position: absolute;
+        left: .95rem;
+        top: .35rem;
+        bottom: .35rem;
+        width: 2px;
+        background: #e2e8f0;
+    }
+
+    .cv-timeline-item {
+        position: relative;
+        padding-bottom: 1.6rem;
+    }
+
+    .cv-timeline-item:last-child {
+        padding-bottom: 0;
+    }
+
+    .cv-timeline-dot {
+        position: absolute;
+        left: -2.4rem;
+        top: 0;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .95rem;
+        color: #fff;
+        background: #2563eb;
+    }
+
+    .cv-timeline-title {
+        font-weight: 600;
+        font-size: .9rem;
+        margin-bottom: .15rem;
+    }
+
+    .cv-timeline-sub {
+        font-size: .82rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <!-- ============ BREADCRUMB ============ -->
+    <nav aria-label="breadcrumb" class="mb-2">
+        <ol class="breadcrumb small mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'superadmin_dashboard' %}" class="text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'colleges_list' %}" class="text-decoration-none">Colleges</a></li>
+            <li class="breadcrumb-item active" aria-current="page">College Profile</li>
+        </ol>
+    </nav>
+
+    <!-- ============ PAGE HEADER ============ -->
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">College Profile</h4>
+            <p class="text-secondary mb-0">View complete college information</p>
+        </div>
+        <a href="{% url 'colleges_list' %}" class="btn btn-outline-secondary rounded-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Colleges
+        </a>
+    </div>
+
+    <!-- ============ COLLEGE OVERVIEW CARD ============ -->
+    <div class="card cv-card shadow-sm mb-4">
+        <div class="card-body p-4">
+            <div class="row align-items-center g-3">
+                <div class="col-auto">
+                    {% if college.logo %}
+                    <img src="{{ college.logo.url }}" alt="{{ college.college_name }}" class="cv-logo-wrap border">
+                    {% else %}
+                    <div class="cv-logo-placeholder">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col">
+                    <h5 class="fw-bold mb-1">{{ college.college_name|default:"N/A" }}</h5>
+                    <p class="text-secondary small mb-2">
+                        <i class="bi bi-upc-scan me-1"></i>{{ college.college_code|default:"N/A" }}
+                    </p>
+                    <p class="text-secondary small mb-0">
+                        <i class="bi bi-calendar-plus me-1"></i>Registered on {{ college.created_at|date:"d M Y"|default:"N/A" }}
+                    </p>
+                </div>
+                <div class="col-auto">
+                    {% if college.status == "pending" %}
+                    <span class="badge text-bg-warning rounded-pill px-3 py-2">
+                        <i class="bi bi-hourglass-split me-1"></i>Pending
+                    </span>
+                    {% elif college.status == "approved" %}
+                    <span class="badge text-bg-success rounded-pill px-3 py-2">
+                        <i class="bi bi-patch-check-fill me-1"></i>Approved
+                    </span>
+                    {% elif college.status == "rejected" %}
+                    <span class="badge text-bg-danger rounded-pill px-3 py-2">
+                        <i class="bi bi-x-circle-fill me-1"></i>Rejected
+                    </span>
+                    {% elif college.status == "suspended" %}
+                    <span class="badge text-bg-secondary rounded-pill px-3 py-2">
+                        <i class="bi bi-pause-circle-fill me-1"></i>Suspended
+                    </span>
+                    {% else %}
+                    <span class="badge text-bg-light text-dark rounded-pill px-3 py-2">N/A</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- ============ COLLEGE INFORMATION CARD ============ -->
+        <div class="col-lg-6">
+            <div class="card cv-card shadow-sm h-100">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <h6 class="fw-bold mb-0"><i class="bi bi-mortarboard me-2 text-primary"></i>College Information</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">College Name</div>
+                            <div class="cv-info-value">{{ college.college_name|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">College Code</div>
+                            <div class="cv-info-value">{{ college.college_code|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Email</div>
+                            <div class="cv-info-value">{{ college.email|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Phone Number</div>
+                            <div class="cv-info-value">{{ college.phone|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Website</div>
+                            {% if college.website %}
+                            <div class="cv-info-value">
+                                <a href="{{ college.website }}" target="_blank" rel="noopener">{{ college.website }}</a>
+                            </div>
+                            {% else %}
+                            <div class="cv-info-value text-muted-italic">Not Available</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Address</div>
+                            <div class="cv-info-value">{{ college.address|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">City</div>
+                            <div class="cv-info-value">{{ college.city|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">State</div>
+                            <div class="cv-info-value">{{ college.state|default:"N/A" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ ADMINISTRATOR INFORMATION CARD ============ -->
+        <div class="col-lg-6">
+            <div class="card cv-card shadow-sm h-100">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <h6 class="fw-bold mb-0"><i class="bi bi-person-badge me-2 text-primary"></i>Administrator Information</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Username</div>
+                            <div class="cv-info-value">{{ college.admin.username|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">First Name</div>
+                            <div class="cv-info-value">{{ college.admin.first_name|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Last Name</div>
+                            <div class="cv-info-value">{{ college.admin.last_name|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Email</div>
+                            <div class="cv-info-value">{{ college.admin.email|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Date Joined</div>
+                            <div class="cv-info-value">{{ college.admin.date_joined|date:"d M Y"|default:"N/A" }}</div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Last Login</div>
+                            {% if college.admin.last_login %}
+                            <div class="cv-info-value">{{ college.admin.last_login|date:"d M Y, h:i A" }}</div>
+                            {% else %}
+                            <div class="cv-info-value text-muted-italic">Never logged in</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="cv-info-label">Active Status</div>
+                            <div class="cv-info-value">
+                                {% if college.admin.is_active %}
+                                <span class="badge text-bg-success rounded-pill px-3 py-2">
+                                    <i class="bi bi-check-circle me-1"></i>Active
+                                </span>
+                                {% else %}
+                                <span class="badge text-bg-danger rounded-pill px-3 py-2">
+                                    <i class="bi bi-x-circle me-1"></i>Inactive
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ TIMELINE CARD ============ -->
+        <div class="col-12">
+            <div class="card cv-card shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <h6 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Timeline</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="cv-timeline">
+
+                        <div class="cv-timeline-item">
+                            <span class="cv-timeline-dot bg-primary">
+                                <i class="bi bi-calendar-plus"></i>
+                            </span>
+                            <div class="cv-timeline-title">College Registered</div>
+                            <div class="cv-timeline-sub">{{ college.created_at|date:"d M Y, h:i A"|default:"N/A" }}</div>
+                        </div>
+
+                        <div class="cv-timeline-item">
+                            {% if college.status == "pending" %}
+                            <span class="cv-timeline-dot bg-warning">
+                                <i class="bi bi-hourglass-split"></i>
+                            </span>
+                            <div class="cv-timeline-title">Current Status</div>
+                            <div class="cv-timeline-sub">
+                                <span class="badge text-bg-warning rounded-pill px-3 py-2">Pending</span>
+                            </div>
+                            {% elif college.status == "approved" %}
+                            <span class="cv-timeline-dot bg-success">
+                                <i class="bi bi-patch-check-fill"></i>
+                            </span>
+                            <div class="cv-timeline-title">Current Status</div>
+                            <div class="cv-timeline-sub">
+                                <span class="badge text-bg-success rounded-pill px-3 py-2">Approved</span>
+                            </div>
+                            {% elif college.status == "rejected" %}
+                            <span class="cv-timeline-dot bg-danger">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </span>
+                            <div class="cv-timeline-title">Current Status</div>
+                            <div class="cv-timeline-sub">
+                                <span class="badge text-bg-danger rounded-pill px-3 py-2">Rejected</span>
+                            </div>
+                            {% elif college.status == "suspended" %}
+                            <span class="cv-timeline-dot bg-secondary">
+                                <i class="bi bi-pause-circle-fill"></i>
+                            </span>
+                            <div class="cv-timeline-title">Current Status</div>
+                            <div class="cv-timeline-sub">
+                                <span class="badge text-bg-secondary rounded-pill px-3 py-2">Suspended</span>
+                            </div>
+                            {% else %}
+                            <span class="cv-timeline-dot bg-secondary">
+                                <i class="bi bi-question-circle"></i>
+                            </span>
+                            <div class="cv-timeline-title">Current Status</div>
+                            <div class="cv-timeline-sub">N/A</div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

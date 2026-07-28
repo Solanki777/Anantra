@@ -241,3 +241,11 @@ def list_colleges(request, status=None):
         "colleges_list.html",
         context,
     )
+
+@superadmin_required
+def college_view(request, id):
+    college = get_object_or_404(College, id=id)
+
+    return render(request, "college_view.html", {
+        "college": college,
+    })

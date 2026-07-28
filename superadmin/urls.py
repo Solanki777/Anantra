@@ -18,4 +18,5 @@ urlpatterns = [
     # Actions
     path("college/<int:id>/approve/", views.approve_college, name="approve_college"),
     path("college/<int:id>/reject/", views.reject_college, name="reject_college"),
+    path("college/<int:id>/view/", views.college_view, name="college_view"),
 ]
