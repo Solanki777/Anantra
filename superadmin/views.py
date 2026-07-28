@@ -11,7 +11,8 @@ from django.contrib.auth.models import User
 import secrets
 import string
 from .form import CollegeForm
-
+from openpyxl import Workbook
+from django.http import HttpResponse
 
 def login_view(request):
    
@@ -321,3 +322,51 @@ def suspend_college(request, id):
         )
 
     return redirect("colleges_list")
+
+
+@superadmin_required
+def export_colleges_excel(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Colleges"
+
+    # Header row
+    ws.append([
+        "ID",
+        "College Name",
+        "College Code",
+        "Email",
+        "Phone",
+        "Website",
+        "City",
+        "State",
+        "Status",
+        "Created At"
+    ])
+
+    # Data rows
+    colleges = College.objects.all()
+
+    for college in colleges:
+        ws.append([
+            college.id,
+            college.college_name,
+            college.college_code,
+            college.email,
+            college.phone,
+            college.website,
+            college.city,
+            college.state,
+            college.status,
+            college.created_at.strftime("%d-%m-%Y %H:%M") if college.created_at else "",
+        ])
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    response["Content-Disposition"] = 'attachment; filename="colleges.xlsx"'
+
+    wb.save(response)
+
+    return response

@@ -2,6 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path(
+    "colleges/export/",
+    views.export_colleges_excel,
+    name="export_colleges_excel",
+),
+
     # Authentication
     path("", views.login_view, name="super_admin_login"),
     path("logout/", views.logout_view, name="super_admin_logout"),
@@ -31,4 +37,5 @@ path(
     views.suspend_college,
     name="suspend_college",
 ),
+
 ]
