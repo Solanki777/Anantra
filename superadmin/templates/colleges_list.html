@@ -446,7 +446,7 @@
                                                 <a href=" {% url 'edit_college' college.id %}" class="btn btn-icon-action btn-outline-secondary" title="Edit College">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <form method="post" action="#" class="d-inline">
+                                                <form method="post" action="{% url 'suspend_college' college.id %}" class="d-inline">
                                                     {% csrf_token %}
                                                     <button type="submit" class="btn btn-icon-action btn-outline-warning" title="Suspend">
                                                         <i class="bi bi-pause-circle"></i>
@@ -468,18 +468,13 @@
                                                 </form>
 
                                                 {% elif college.status == "suspended" %}
-                                                <form method="post" action="{% url 'activate_college' college.id %}" class="d-inline">
+                                                <form method="post" action="{% url 'restore_college' college.id %}" class="d-inline">
                                                     {% csrf_token %}
-                                                    <button type="submit" class="btn btn-icon-action btn-outline-success" title="Activate">
+                                                    <button type="submit" class="btn btn-icon-action btn-outline-success" title="Restore">
                                                         <i class="bi bi-play-circle"></i>
                                                     </button>
                                                 </form>
-                                                <form method="post" action="{% url 'delete_college' college.id %}" class="d-inline">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-icon-action btn-outline-danger" title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
+                            
                                                 {% endif %}
 
                                                    

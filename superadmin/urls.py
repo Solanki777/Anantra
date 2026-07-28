@@ -20,4 +20,15 @@ urlpatterns = [
     path("college/<int:id>/reject/", views.reject_college, name="reject_college"),
     path("college/<int:id>/view/", views.college_view, name="college_view"),
     path("college/<int:id>/edit/", views.edit_college, name="edit_college"),
+    path(
+    "college/<int:id>/restore/",
+    views.restore_college,
+    name="restore_college",
+    
+),
+path(
+    "college/<int:id>/suspend/",
+    views.suspend_college,
+    name="suspend_college",
+),
 ]

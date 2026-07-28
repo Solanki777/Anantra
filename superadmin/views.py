@@ -287,4 +287,37 @@ def edit_college(request,id):
         }
     )
 
-    
+@superadmin_required
+def restore_college(request, id):
+    college = get_object_or_404(College, id=id, status="suspended")
+
+    if request.method == "POST":
+        college.status = "approved"
+        college.save()
+
+        messages.success(
+            request,
+            f"{college.college_name} has been restored successfully."
+        )
+
+    return redirect("colleges_list")
+
+
+@superadmin_required
+def suspend_college(request, id):
+    college = get_object_or_404(
+        College,
+        id=id,
+        status="approved"
+    )
+
+    if request.method == "POST":
+        college.status = "suspended"
+        college.save()
+
+        messages.success(
+            request,
+            "College suspended successfully."
+        )
+
+    return redirect("colleges_list")
