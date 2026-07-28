@@ -10,6 +10,7 @@ from .decorators import superadmin_required
 from django.contrib.auth.models import User
 import secrets
 import string
+from .form import CollegeForm
 
 
 def login_view(request):
@@ -249,3 +250,41 @@ def college_view(request, id):
     return render(request, "college_view.html", {
         "college": college,
     })
+
+@superadmin_required
+def edit_college(request,id):
+    college = get_object_or_404(
+        College,
+        id=id,
+        status = "approved"
+    )
+
+    if request.method == "POST":
+        form = CollegeForm(
+            request.POST,
+            request.FILES,
+            instance = college
+
+        )
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "College updated successfully."
+            )
+
+            return redirect("colleges_lsit")
+    else:
+        form = CollegeForm(instance=college)
+
+    return render(
+        request,
+        "edit_college.html",
+        {
+            "form": form,
+            "college": college
+        }
+    )
+
+    

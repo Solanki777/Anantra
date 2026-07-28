@@ -443,7 +443,7 @@
                                                 </form>
 
                                                 {% elif college.status == "approved" %}
-                                                <a href="#" class="btn btn-icon-action btn-outline-secondary" title="Edit College">
+                                                <a href=" {% url 'edit_college' college.id %}" class="btn btn-icon-action btn-outline-secondary" title="Edit College">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <form method="post" action="#" class="d-inline">
@@ -482,15 +482,8 @@
                                                 </form>
                                                 {% endif %}
 
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-icon-action btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false" title="More Options">
-                                                        <i class="bi bi-three-dots-vertical"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end">
-                                                        <li><a class="dropdown-item" href="#"><i class="bi bi-person-badge me-2"></i>View Profile</a></li>
-                                                        <li><a class="dropdown-item" href="#"><i class="bi bi-pencil-square me-2"></i>Edit College</a></li>
-                                                        <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>View Activity</a></li>
-                                                    </ul>
+                                                   
+                                                                            
                                                 </div>
                                             </div>
                                         </td>

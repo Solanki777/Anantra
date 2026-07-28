@@ -1,0 +1,366 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Minimal additions on top of Bootstrap utilities. */
+
+    .ec-card {
+        border: none;
+        border-radius: 16px;
+    }
+
+    .ec-logo-preview-wrap {
+        width: 96px;
+        height: 96px;
+        border-radius: 18px;
+        object-fit: cover;
+        flex: none;
+    }
+
+    .ec-logo-placeholder {
+        width: 96px;
+        height: 96px;
+        border-radius: 18px;
+        background: #f1f5f9;
+        color: #94a3b8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        flex: none;
+        text-align: center;
+        gap: .2rem;
+    }
+
+    .ec-logo-placeholder span {
+        font-size: .62rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .ec-readonly-label {
+        font-size: .74rem;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: #6c757d;
+        font-weight: 600;
+        margin-bottom: .15rem;
+    }
+
+    .ec-readonly-value {
+        font-size: .92rem;
+        font-weight: 500;
+    }
+
+    .ec-form-label {
+        font-weight: 600;
+        font-size: .87rem;
+        margin-bottom: .35rem;
+    }
+
+    .ec-help-text {
+        font-size: .78rem;
+        color: #6c757d;
+        margin-top: .3rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 3px rgba(37,99,235,.14);
+        border-color: #2563eb;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <!-- ============ BREADCRUMB ============ -->
+    <nav aria-label="breadcrumb" class="mb-2">
+        <ol class="breadcrumb small mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'superadmin_dashboard' %}" class="text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'colleges_list' %}" class="text-decoration-none">Colleges</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit College</li>
+        </ol>
+    </nav>
+
+    <!-- ============ PAGE HEADER ============ -->
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Edit College</h4>
+            <p class="text-secondary mb-0">Update college information</p>
+        </div>
+        <a href="{% url 'colleges_list' %}" class="btn btn-outline-secondary rounded-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Colleges
+        </a>
+    </div>
+
+    <!-- ============ DJANGO MESSAGES ============ -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert
+            {% if message.tags == 'error' %}alert-danger
+            {% elif message.tags == 'success' %}alert-success
+            {% elif message.tags == 'warning' %}alert-warning
+            {% else %}alert-info{% endif %}
+            alert-dismissible fade show rounded-3" role="alert">
+            <i class="bi
+                {% if message.tags == 'error' %}bi-x-circle
+                {% elif message.tags == 'success' %}bi-check-circle
+                {% elif message.tags == 'warning' %}bi-exclamation-triangle
+                {% else %}bi-info-circle{% endif %} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ============ NON-FIELD FORM ERRORS ============ -->
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger rounded-3">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {% for error in form.non_field_errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" id="editCollegeForm" novalidate>
+        {% csrf_token %}
+
+        <div class="row g-4">
+
+            <!-- ============ EDITABLE FORM CARD ============ -->
+            <div class="col-lg-8">
+                <div class="card ec-card shadow-sm">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                        <h6 class="fw-bold mb-0"><i class="bi bi-pencil-square me-2 text-primary"></i>College Information</h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.college_name.id_for_label }}" class="ec-form-label">College Name</label>
+                                {{ form.college_name }}
+                                {% if form.college_name.help_text %}
+                                <div class="ec-help-text">{{ form.college_name.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.college_name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.college_code.id_for_label }}" class="ec-form-label">College Code</label>
+                                {{ form.college_code }}
+                                {% if form.college_code.help_text %}
+                                <div class="ec-help-text">{{ form.college_code.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.college_code.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="ec-form-label">Email Address</label>
+                                {{ form.email }}
+                                {% if form.email.help_text %}
+                                <div class="ec-help-text">{{ form.email.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.email.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.phone.id_for_label }}" class="ec-form-label">Phone Number</label>
+                                {{ form.phone }}
+                                {% if form.phone.help_text %}
+                                <div class="ec-help-text">{{ form.phone.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.phone.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ form.website.id_for_label }}" class="ec-form-label">Website</label>
+                                {{ form.website }}
+                                {% if form.website.help_text %}
+                                <div class="ec-help-text">{{ form.website.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.website.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ form.address.id_for_label }}" class="ec-form-label">Address</label>
+                                {{ form.address }}
+                                {% if form.address.help_text %}
+                                <div class="ec-help-text">{{ form.address.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.address.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.city.id_for_label }}" class="ec-form-label">City</label>
+                                {{ form.city }}
+                                {% if form.city.help_text %}
+                                <div class="ec-help-text">{{ form.city.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.city.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.state.id_for_label }}" class="ec-form-label">State</label>
+                                {{ form.state }}
+                                {% if form.state.help_text %}
+                                <div class="ec-help-text">{{ form.state.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.state.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ form.logo.id_for_label }}" class="ec-form-label">College Logo</label>
+                                {{ form.logo }}
+                                <div class="ec-help-text">Recommended: square image, PNG or JPG, under 2MB.</div>
+                                {% for error in form.logo.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ SIDE COLUMN: LOGO PREVIEW + READ-ONLY INFO ============ -->
+            <div class="col-lg-4">
+
+                <!-- Logo Preview -->
+                <div class="card ec-card shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                        <h6 class="fw-bold mb-0"><i class="bi bi-image me-2 text-primary"></i>Current Logo</h6>
+                    </div>
+                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                        {% if college.logo %}
+                        <img src="{{ college.logo.url }}" alt="{{ college.college_name }}" class="ec-logo-preview-wrap border img-fluid">
+                        {% else %}
+                        <div class="ec-logo-placeholder">
+                            <i class="bi bi-building"></i>
+                            <span>No Logo<br>Uploaded</span>
+                        </div>
+                        {% endif %}
+                        <div class="small text-secondary">
+                            Upload a new file above to replace the current logo.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Read-Only Information -->
+                <div class="card ec-card shadow-sm">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                        <h6 class="fw-bold mb-0"><i class="bi bi-info-circle me-2 text-primary"></i>College Information (Read-Only)</h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <div class="ec-readonly-label">Current Status</div>
+                            <div class="ec-readonly-value">
+                                {% if college.status == "pending" %}
+                                <span class="badge text-bg-warning rounded-pill px-3 py-2"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
+                                {% elif college.status == "approved" %}
+                                <span class="badge text-bg-success rounded-pill px-3 py-2"><i class="bi bi-patch-check-fill me-1"></i>Approved</span>
+                                {% elif college.status == "rejected" %}
+                                <span class="badge text-bg-danger rounded-pill px-3 py-2"><i class="bi bi-x-circle-fill me-1"></i>Rejected</span>
+                                {% elif college.status == "suspended" %}
+                                <span class="badge text-bg-secondary rounded-pill px-3 py-2"><i class="bi bi-pause-circle-fill me-1"></i>Suspended</span>
+                                {% else %}
+                                <span class="badge text-bg-light text-dark rounded-pill px-3 py-2">N/A</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="ec-readonly-label">Created At</div>
+                            <div class="ec-readonly-value">{{ college.created_at|date:"d M Y, h:i A"|default:"N/A" }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="ec-readonly-label">Admin Username</div>
+                            <div class="ec-readonly-value">{{ college.admin.username|default:"N/A" }}</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <div class="ec-readonly-label">Admin Email</div>
+                            <div class="ec-readonly-value">{{ college.admin.email|default:"N/A" }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============ FORM ACTIONS ============ -->
+        <div class="card ec-card shadow-sm mt-4">
+            <div class="card-body p-4 d-flex flex-wrap gap-2 justify-content-end">
+                <a href="{% url 'colleges_list' %}" class="btn btn-outline-secondary rounded-3">
+                    <i class="bi bi-x-lg me-1"></i> Cancel
+                </a>
+                <button type="reset" class="btn btn-secondary rounded-3">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Form
+                </button>
+                <button type="submit" class="btn btn-primary rounded-3">
+                    <i class="bi bi-check-lg me-1"></i> Save Changes
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ============ BOOTSTRAP FIELD STYLING ============
+    // Apply Bootstrap form-control / form-select classes to Django-rendered
+    // widgets, and mark fields with errors as invalid.
+    (function () {
+        var form = document.getElementById('editCollegeForm');
+        if (!form) return;
+
+        form.querySelectorAll('input, select, textarea').forEach(function (field) {
+            if (field.type === 'file') {
+                field.classList.add('form-control');
+            } else if (field.tagName === 'SELECT') {
+                field.classList.add('form-select');
+            } else if (field.type !== 'checkbox' && field.type !== 'radio' && field.type !== 'hidden' && field.name !== 'csrfmiddlewaretoken') {
+                field.classList.add('form-control');
+            }
+        });
+
+        // Highlight any field that already rendered a Django error next to it.
+        form.querySelectorAll('.invalid-feedback').forEach(function (feedback) {
+            var wrapper = feedback.closest('[class*="col-"]');
+            if (wrapper) {
+                var control = wrapper.querySelector('input, select, textarea');
+                if (control) control.classList.add('is-invalid');
+            }
+        });
+    })();
+
+    // ============ CONFIRMATION BEFORE SUBMIT ============
+    document.getElementById('editCollegeForm').addEventListener('submit', function (e) {
+        if (!confirm('Are you sure you want to save these changes?')) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
