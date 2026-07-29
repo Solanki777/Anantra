@@ -283,35 +283,12 @@
                                     <input type="text" name="q" class="form-control ps-5 rounded-3" placeholder="Search by name, email or principal">
                                 </div>
                             </div>
-                            <div class="col-6 col-lg-2">
-                                <label class="form-label small text-secondary fw-semibold">City</label>
-                                <select name="city" class="form-select rounded-3">
-                                    <option value="">All Cities</option>
-                                    {% for city in city_list %}
-                                    <option value="{{ city }}">{{ city }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-6 col-lg-2">
-                                <label class="form-label small text-secondary fw-semibold">State</label>
-                                <select name="state" class="form-select rounded-3">
-                                    <option value="">All States</option>
-                                    {% for state in state_list %}
-                                    <option value="{{ state }}">{{ state }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-6 col-lg-2">
-                                <label class="form-label small text-secondary fw-semibold">Registration Date</label>
-                                <input type="date" name="reg_date" class="form-control rounded-3">
-                            </div>
+                           
                             <div class="col-6 col-lg-2 d-flex gap-2">
                                 <button type="submit" class="btn btn-primary rounded-3 flex-fill" style="background:var(--ac-primary); border-color:var(--ac-primary);">
                                     <i class="bi bi-funnel"></i> Filter
                                 </button>
-                                <a href="?" class="btn btn-outline-secondary rounded-3" title="Reset Filters">
-                                    <i class="bi bi-arrow-counterclockwise"></i>
-                                </a>
+                    
                             </div>
                         </form>
                     </div>
