@@ -41,39 +41,36 @@ def logout_view(request):
     logout(request)
     return redirect("super_admin_login")
 
-
 @superadmin_required
 def dashboard(request):
-    today = timezone.now().date()
-
+   
+    
     total_colleges = College.objects.count()
 
-    pending_count = College.objects.filter(
-        status="pending"
+    pending_colleges = College.objects.filter(
+        status = "pending"
     ).count()
 
-    today_count = College.objects.filter(
-        created_at__date=today
+    approved_colleges = College.objects.filter(
+        status = "approved"
     ).count()
 
-    month_count = College.objects.filter(
-        created_at__year=today.year,
-        created_at__month=today.month
+    rejected_colleges = College.objects.filter(
+        status = "rejected"
     ).count()
-
-    approved_colleges = College.objects.filter(status="approved").count()
-    rejected_colleges = College.objects.filter(status="rejected").count()
 
     context = {
         "total_colleges": total_colleges,
-        "pending_count": pending_count,
-        "today_count": today_count,
-        "month_count": month_count,
-        "approved_colleges": approved_colleges,
-        "rejected_colleges": rejected_colleges,
+        "pending_colleges" :   pending_colleges,
+        "approved_colleges" : approved_colleges,
+        "rejected_colleges" : rejected_colleges,
     }
 
-    return render(request, "dashboard.html", context)
+    return render(
+        request,
+        "dashboard.html",
+        context,
+    )
 
 @superadmin_required
 def pending_colleges(request):

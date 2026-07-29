@@ -453,19 +453,7 @@
                                                     </button>
                                                 </form>
 
-                                                {% elif college.status == "rejected" %}
-                                                <form method="post" action="#" class="d-inline">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-icon-action btn-outline-success" title="Restore">
-                                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                                    </button>
-                                                </form>
-                                                <form method="post" action="#" class="d-inline">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-icon-action btn-outline-danger" title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
+                                                
 
                                                 {% elif college.status == "suspended" %}
                                                 <form method="post" action="{% url 'restore_college' college.id %}" class="d-inline">
