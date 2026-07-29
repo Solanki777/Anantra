@@ -7,12 +7,12 @@ from django.conf import settings
 from django.contrib.auth import authenticate,login ,logout
 from django.core.mail import send_mail
 from .decorators import superadmin_required
-from django.contrib.auth.models import User
 import secrets
 import string
 from .form import CollegeForm
 from openpyxl import Workbook
 from django.http import HttpResponse
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 
 def login_view(request):
    
@@ -103,19 +103,14 @@ def college_details(request,id):
         context,
     )
 
-
-
-
-@superadmin_required
-def approve_college(request, id):
-    college = get_object_or_404(College, id=id)
+def process_approve(college):
     user = college.admin
 
-    # Generate a temporary password
+    # Generate temporary password
     chars = string.ascii_letters + string.digits + "@#$%!"
     password = "".join(secrets.choice(chars) for _ in range(10))
 
-    # Use email as username
+    # Activate user
     user.username = user.email
     user.set_password(password)
     user.is_active = True
@@ -148,27 +143,44 @@ InterEdu Team
         fail_silently=False,
     )
 
+
+def process_reject(college):
+    """
+    Reject a college registration.
+    """
+
+    college.status = "rejected"
+    college.save()
+
+    # We'll send a rejection email here later.
+
+
+
+@superadmin_required
+def approve_college(request, id):
+    college = get_object_or_404(College, id=id)
+
+    process_approve(college)
+
     messages.success(
         request,
-        f"{college.college_name} has been approved successfully. Login credentials have been sent to {user.email}."
+        f"{college.college_name} has been approved successfully. Login credentials have been sent to {college.admin.email}."
     )
 
     return redirect("pending_colleges")
 
 
-
 @superadmin_required
-def reject_college(request,id):
-    
-    college = get_object_or_404(College,id=id)
+def reject_college(request, id):
+    college = get_object_or_404(College, id=id)
 
-    college.status = "rejected"
-    college.save()
+    process_reject(college)
 
     messages.warning(
         request,
         f"{college.college_name} has been rejected."
     )
+
     return redirect("pending_colleges")
 
 
@@ -370,3 +382,66 @@ def export_colleges_excel(request):
     wb.save(response)
 
     return response
+
+
+signer = TimestampSigner()
+
+
+def email_action(request, action, college_id, token):
+    """
+    Handles Approve/Reject actions from the email.
+    """
+
+    try:
+        original_value = signer.unsign(token, max_age=60 * 60 * 24)
+
+        if original_value != str(college_id):
+            return HttpResponse(
+                "<h2>Invalid approval link.</h2>",
+                status=400,
+            )
+
+    except SignatureExpired:
+        return HttpResponse(
+            "<h2>This link has expired.</h2>",
+            status=400,
+        )
+
+    except BadSignature:
+        return HttpResponse(
+            "<h2>Invalid approval link.</h2>",
+            status=400,
+        )
+
+    college = get_object_or_404(College, id=college_id)
+
+    # Already processed
+    if college.status in ["approved", "rejected"]:
+        messages.info(
+            request,
+            f"This college has already been {college.status}."
+        )
+        return redirect("college_details", id=college.id)
+
+    if action == "approve":
+        process_approve(college)
+
+        return HttpResponse("""
+        <h2 style="color:green;">✅ College Approved Successfully</h2>
+        <p>The college has been approved.</p>
+        <p>Login credentials have been emailed to the college administrator.</p>
+        """)
+
+    elif action == "reject":
+        process_reject(college)
+
+        return HttpResponse("""
+        <h2 style="color:red;">❌ College Rejected</h2>
+        <p>The college registration has been rejected.</p>
+        """)
+
+    else:
+        return HttpResponse(
+            "<h2>Invalid action.</h2>",
+            status=400,
+        )

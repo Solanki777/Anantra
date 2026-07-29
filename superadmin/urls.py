@@ -38,4 +38,10 @@ path(
     name="suspend_college",
 ),
 
+    path(
+            "action/<str:action>/<int:college_id>/<str:token>/",
+            views.email_action,
+            name="email_action",
+        ),
+
 ]
