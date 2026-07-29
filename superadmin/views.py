@@ -14,6 +14,10 @@ from .form import CollegeForm
 from openpyxl import Workbook
 from django.http import HttpResponse
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from django.utils.timesince import timesince
+import json
 
 def login_view(request):
    
@@ -43,27 +47,60 @@ def logout_view(request):
 
 @superadmin_required
 def dashboard(request):
-   
-    
+
     total_colleges = College.objects.count()
+    pending_colleges = College.objects.filter(status="pending").count()
+    approved_colleges = College.objects.filter(status="approved").count()
+    rejected_colleges = College.objects.filter(status="rejected").count()
+    suspend_colleges = College.objects.filter(status="suspended").count()
 
-    pending_colleges = College.objects.filter(
-        status = "pending"
-    ).count()
+    # Recent registrations
+    recent_colleges = (
+        College.objects.select_related("admin")
+        .order_by("-created_at")[:10]
+    )
 
-    approved_colleges = College.objects.filter(
-        status = "approved"
-    ).count()
+    # Recent activity
+    recent_activities = []
 
-    rejected_colleges = College.objects.filter(
-        status = "rejected"
-    ).count()
+    for college in College.objects.order_by("-created_at")[:10]:
+        recent_activities.append({
+            "type": college.status.lower(),
+            "message": f"{college.college_name} is {college.get_status_display()}",
+            "timestamp": timesince(college.created_at) + " ago",
+        })
+
+    # Registration trend (last months)
+    registrations = (
+        College.objects
+        .annotate(month=TruncMonth("created_at"))
+        .values("month")
+        .annotate(total=Count("id"))
+        .order_by("month")
+    )
+
+    chart_labels = [
+        r["month"].strftime("%b")
+        for r in registrations
+    ]
+
+    chart_values = [
+        r["total"]
+        for r in registrations
+    ]
 
     context = {
         "total_colleges": total_colleges,
-        "pending_colleges" :   pending_colleges,
-        "approved_colleges" : approved_colleges,
-        "rejected_colleges" : rejected_colleges,
+        "pending_colleges": pending_colleges,
+        "approved_colleges": approved_colleges,
+        "rejected_colleges": rejected_colleges,
+        "suspend_colleges": suspend_colleges,
+
+        "recent_colleges": recent_colleges,
+        "recent_activities": recent_activities,
+
+        "chart_labels": json.dumps(chart_labels),
+        "chart_values": json.dumps(chart_values),
     }
 
     return render(
@@ -301,7 +338,7 @@ def edit_college(request,id):
                 "College updated successfully."
             )
 
-            return redirect("colleges_lsit")
+            return redirect("colleges_list")
     else:
         form = CollegeForm(instance=college)
 

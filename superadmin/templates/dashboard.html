@@ -76,10 +76,11 @@
                         <div class="ac-stat-card card-rejected">
                             <span class="trend">Closed</span>
                             <div class="icon-wrap"><i class="bi bi-x-circle-fill"></i></div>
-                            <h3>{{ rejected_colleges|default:"0" }}</h3>
-                            <p class="label">Rejected</p>
+                            <h3>{{ suspend_colleges |default:"0" }}</h3>
+                            <p class="label">Suspended</p>
                         </div>
                     </div>
+    
                 </div>
 
                 <!-- ============ TABLE + ACTIVITY ============ -->
@@ -88,7 +89,7 @@
                         <div class="ac-panel">
                             <div class="ac-panel-header">
                                 <h5>Recent College Registrations</h5>
-                                <a href="#" class="link">View all</a>
+                                <a href="{% url 'colleges_list' %}" class="link">View all</a>
                             </div>
                             <div class="ac-panel-body">
                                 <div class="table-responsive">
@@ -139,7 +140,7 @@
                         <div class="ac-panel">
                             <div class="ac-panel-header">
                                 <h5>Recent Activity</h5>
-                                <a href="#" class="link">Clear</a>
+                                
                             </div>
                             <div class="ac-panel-body">
                                 {% for activity in recent_activities %}
@@ -147,7 +148,7 @@
                                     <div class="activity-icon activity-{{ activity.type }}">
                                         {% if activity.type == "approved" %}
                                             <i class="bi bi-check-lg"></i>
-                                        {% elif activity.type == "rejected" %}
+                                        {% elif activity.type == "Suspended" %}
                                             <i class="bi bi-x-lg"></i>
                                         {% else %}
                                             <i class="bi bi-plus-lg"></i>
@@ -199,7 +200,7 @@
                                 <div class="mt-3">
                                     <div class="legend-row"><span class="legend-dot" style="background:#f59e0b;"></span> Pending</div>
                                     <div class="legend-row"><span class="legend-dot" style="background:#16a34a;"></span> Approved</div>
-                                    <div class="legend-row"><span class="legend-dot" style="background:#dc3545;"></span> Rejected</div>
+                                    <div class="legend-row"><span class="legend-dot" style="background:#dc3545;"></span> Suspended</div>
                                 </div>
                             </div>
                         </div>
@@ -263,12 +264,12 @@
             new Chart(document.getElementById('statusPieChart').getContext('2d'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Pending', 'Approved', 'Rejected'],
+                    labels: ['Pending', 'Approved', 'Suspended'],
                     datasets: [{
                         data: [
                             {{ pending_colleges|default:"0" }},
                             {{ approved_colleges|default:"0" }},
-                            {{ rejected_colleges|default:"0" }}
+                            {{ suspend_colleges|default:"0" }}
                         ],
                         backgroundColor: ['#f59e0b', '#16a34a', '#dc3545'],
                         borderWidth: 0,
