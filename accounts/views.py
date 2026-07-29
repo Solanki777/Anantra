@@ -3,6 +3,7 @@ from .forms import RegisterForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from colleges.emails import send_college_registration_email
 
 
 def register_view(request):
@@ -13,8 +14,10 @@ def register_view(request):
         if form.is_valid():
             print("✅ Form is valid")
 
-            form.save()
+            college = form.save()
             print("✅ Form saved")
+
+            send_college_registration_email(college)
 
             messages.success(
                 request,

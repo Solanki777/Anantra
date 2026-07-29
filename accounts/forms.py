@@ -53,7 +53,7 @@ class RegisterForm(forms.ModelForm):
         if commit:
             user.save()
 
-            College.objects.create(
+            college = College.objects.create(
                 admin=user,
                 college_name=self.cleaned_data["college_name"],
                 college_code=self._generate_college_code(),
@@ -67,7 +67,9 @@ class RegisterForm(forms.ModelForm):
                 status="pending",
             )
 
-        return user
+            return college
+
+        return None
 
     @staticmethod
     def _generate_college_code():
