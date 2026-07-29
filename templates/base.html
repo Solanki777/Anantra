@@ -73,22 +73,16 @@
 
                             <!-- User Profile Dropdown -->
                             <li class="nav-item dropdown ms-lg-2">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-                                href="#"
-                                role="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                                
 
                                     <img src="https://ui-avatars.com/api/?name={{ request.user.get_full_name|default:request.user.username }}&background=2F5CE0&color=fff"
                                         class="et-avatar-sm"
-                                        alt="{{ request.user.username }}">
+                                        alt="{{ request.user.college }}">
 
                                     <span class="d-none d-md-inline">
-                                        {% if request.user.get_full_name %}
-                                            {{ request.user.get_full_name }}
-                                        {% else %}
-                                            {{ request.user.username }}
-                                        {% endif %}
+                                        
+                                            {{ request.user.college }}
+                                        
                                     </span>
                                 </a>
 

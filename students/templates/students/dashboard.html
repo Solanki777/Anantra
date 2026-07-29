@@ -11,11 +11,8 @@ EduTrack{% endblock %}
   <div class="et-card p-3 p-lg-4">
     <h4 class="mb-1">
     Welcome back,
-        {% if request.user.get_full_name %}
-            {{ request.user.get_full_name }}
-        {% else %}
-            {{ request.user.username }}
-        {% endif %}
+        {{ request.user.college }}
+        
         👋
     </h4>
     <p class="text-muted mb-0">
@@ -231,11 +228,7 @@ EduTrack{% endblock %}
             alt="{{ request.user.username }} profile avatar"
         />
         <h6 class="mb-1">
-            {% if request.user.get_full_name %}
-                {{ request.user.get_full_name }}
-            {% else %}
-                {{ request.user.username }}
-            {% endif %}
+           {{ request.user.college}}
         </h6>
         <p class="text-muted mb-2 small">
           {{ request.user.email|default:"admin@edutrack.com" }}
