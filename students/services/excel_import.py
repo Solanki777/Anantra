@@ -19,8 +19,14 @@ REQUIRED_COLUMNS = [
 ]
 
 def read_excel_file(excel_file):
-    df = pd.read_excel(excel_file)
-    return df
+    file_name = excel_file.name.lower()
+
+    if file_name.endswith(".xlsx"):
+        return pd.read_excel(excel_file, engine="openpyxl")
+    elif file_name.endswith(".xls"):
+        return pd.read_excel(excel_file, engine="xlrd")
+    else:
+        raise ValueError("Only .xlsx and .xls files are supported.")
 
 def validate_excel(df):
     """
@@ -178,31 +184,137 @@ def validate_excel(df):
 
 
 def import_students_data(df, college):
-    """
-    Import validated students into the database.
-    """
 
-    students = []
+    valid_students = []
+    errors = []
 
-    for _, row in df.iterrows():
+    for index, row in df.iterrows():
 
-        student = Student(
+        row_no = index + 2
+        row_errors = []
+
+        # -----------------------------
+        # Name
+        # -----------------------------
+        name = str(row["Name"]).strip()
+
+        if not name:
+            row_errors.append("Name cannot be empty")
+
+        # -----------------------------
+        # Enrollment
+        # -----------------------------
+        enrollment = str(row["Enrollment No"]).strip()
+
+        if Student.objects.filter(
             college=college,
-            name=str(row["Name"]).strip(),
-            enrollment_no=str(row["Enrollment No"]).strip(),
-            semester=int(row["Semester"]),
-            email=str(row["Email"]).strip(),
-            mobile=str(row["Mobile"]).strip(),
-            course=str(row["Course"]).strip(),
-            department=str(row["Department"]).strip(),
-            admission_date=pd.to_datetime(
+            enrollment_no=enrollment
+        ).exists():
+            row_errors.append("Enrollment Number already exists")
+
+        # -----------------------------
+        # Semester
+        # -----------------------------
+        try:
+            semester = int(row["Semester"])
+
+            if semester not in range(1, 9):
+                row_errors.append("Semester must be between 1 and 8")
+
+        except:
+            row_errors.append("Invalid Semester")
+
+        # -----------------------------
+        # Email
+        # -----------------------------
+        email = str(row["Email"]).strip()
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            row_errors.append("Invalid Email")
+
+        if Student.objects.filter(
+            college=college,
+            email=email
+        ).exists():
+            row_errors.append("Email already exists")
+
+        # -----------------------------
+        # Mobile
+        # -----------------------------
+        mobile = str(row["Mobile"]).strip()
+
+        if not re.fullmatch(r"\d{10}", mobile):
+            row_errors.append("Mobile must contain exactly 10 digits")
+
+        # -----------------------------
+        # Course
+        # -----------------------------
+        course = str(row["Course"]).strip()
+
+        if not course:
+            row_errors.append("Course cannot be empty")
+
+        # -----------------------------
+        # Department
+        # -----------------------------
+        department = str(row["Department"]).strip()
+
+        if not department:
+            row_errors.append("Department cannot be empty")
+
+        # -----------------------------
+        # Admission Date
+        # -----------------------------
+        try:
+            admission_date = pd.to_datetime(
                 row["Admission Date"]
-            ).date(),
-        )
+            ).date()
 
-        students.append(student)
+        except:
+            row_errors.append("Invalid Admission Date")
 
+        # -----------------------------
+        # Save Error or Student
+        # -----------------------------
+        if row_errors:
+
+            errors.append({
+                "row": row_no,
+                "message": ", ".join(row_errors)
+            })
+
+        else:
+
+            valid_students.append(
+                Student(
+                    college=college,
+                    name=name,
+                    enrollment_no=enrollment,
+                    semester=semester,
+                    email=email,
+                    mobile=mobile,
+                    course=course,
+                    department=department,
+                    admission_date=admission_date,
+                )
+            )
+
+    # Bulk Insert
     with transaction.atomic():
-        Student.objects.bulk_create(students)
 
-    return len(students)
+        Student.objects.bulk_create(valid_students)
+
+    # Summary
+    return {
+
+        "total_rows": len(df),
+
+        "imported": len(valid_students),
+
+        "failed": len(errors),
+
+        "errors": errors,
+
+    }

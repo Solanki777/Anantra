@@ -293,53 +293,44 @@ def import_students(request):
 
     form = ImportStudentForm()
 
+    context = {
+        "form": form
+    }
+
     if request.method == "POST":
 
-        form = ImportStudentForm(
-            request.POST,
-            request.FILES
-        )
+        form = ImportStudentForm(request.POST, request.FILES)
 
         if form.is_valid():
 
-            excel_file = form.cleaned_data["excel_file"]
+            excel_file = request.FILES["excel_file"]
 
-            try:
+            df = read_excel_file(excel_file)
 
-                df = read_excel_file(excel_file)
+            # Check only required columns
+            errors = validate_excel(df)
 
-                errors = validate_excel(df)
+            if errors:
+                for error in errors:
+                    messages.error(request, error)
 
-                if errors:
-
-                    for error in errors:
-                        messages.error(request, error)
-
-                else:
-
-                    count = import_students_data(
-                        df,
-                        request.user.college
-                    )
-
-                    messages.success(
-                        request,
-                        f"{count} students imported successfully!"
-                    )
-
-                    return redirect("student_list")
-
-            except Exception as e:
-
-                messages.error(
+                context["form"] = form
+                return render(
                     request,
-                    f"Error: {e}"
+                    "students/import_students.html",
+                    context
                 )
+
+            # Import students
+            result = import_students_data(
+                df,
+                request.user.college
+            )
+
+            context.update(result)
 
     return render(
         request,
         "students/import_students.html",
-        {
-            "form": form
-        }
+        context
     )
