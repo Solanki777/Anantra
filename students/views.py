@@ -13,6 +13,7 @@ import json
 from django.db.models.functions import ExtractMonth
 import pandas as pd
 from .forms import ImportStudentForm
+from .services.excel_import import read_excel_file,validate_excel
 
 
 
@@ -142,6 +143,9 @@ def add_student(request):
 
 @login_required
 def student_list(request):
+    print(request.user)
+    print(request.user.is_authenticated)
+    print(request.user.is_superuser)
 
     search = request.GET.get("search" , "")
 
@@ -286,3 +290,56 @@ def export_student_csv(request):
     return response
 
 
+@login_required
+def import_students(request):
+    form = ImportStudentForm()
+
+    if request.method == "POST":
+        form = ImportStudentForm(
+            request.POST,
+            request.FILES,
+        )
+
+        if form.is_valid():
+            excel_file = form.cleaned_data["excel_file"]
+
+            try :
+                df = read_excel_file(excel_file)
+
+                missing_columns = validate_excel(df)
+
+                if missing_columns:
+
+                    messages.error(
+                        request,
+                        "Missing Columns: " +
+                        ", ".join(missing_columns)
+                    )
+
+                else:
+
+                    messages.success(
+                        request,
+                        "Excel format is valid."
+                    )
+
+                    print(df.head())
+
+                messages.success(
+                    request,
+                    "excel file read successfully"
+                )
+
+            except Exception as e:
+                messages.error(
+                    request,
+                    f"Error:{e}"
+                )
+
+    return render(
+            request,
+            "students/import_students.html",
+            {
+                "form":form
+            },
+        )
