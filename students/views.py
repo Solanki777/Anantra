@@ -372,42 +372,26 @@ def generate_id_card(request, id):
         },
     )
 
-@login_required
-def download_id_card(request, id):
+@login_required 
+def download_id_card(request, student_id):
+    student = get_object_or_404(Student, id=student_id)
 
-    student = get_object_or_404(
-        Student,
-        id=id
+    # Use your existing QR creation logic here.
+    qr_path = student.qr_code.name if student.qr_code else ""
+
+    pdf_content = generate_pdf(
+        "students/id_card_pdf.html",
+        {
+            "student": student,
+            "qr_path": qr_path,
+        },
     )
 
-    qr_path = generate_student_qr(student)
+    if pdf_content is None:
+        return HttpResponse("Could not generate PDF.", status=500)
 
-    context = {
-        "student": student,
-        "qr_path": qr_path,
-    }
-
-    pdf = generate_pdf(
-        "students/id_card.html",
-        context
+    response = HttpResponse(pdf_content, content_type="application/pdf")
+    response["Content-Disposition"] = (
+        f'attachment; filename="student_id_{student.enrollment_no}.pdf"'
     )
-
-    response = HttpResponse(
-        pdf,
-        content_type="application/pdf"
-    )
-    student_name = student.name.replace(" ", "_")
-
-    filename = (
-        f"{student.college.college_code}_"
-        f"{student.enrollment_no}_"
-        f"{student_name}_ID_Card.pdf"
-    )
-
-
-    response = HttpResponse(
-    pdf,
-    content_type="application/pdf"
-)
-
     return response

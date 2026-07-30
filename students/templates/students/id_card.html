@@ -1,409 +1,204 @@
-{% extends "base.html" %}
-
-{% block content %}
-
-<div class="container py-5">
-
-    <div class="text-end mb-3 d-print-none">
-
-        <button onclick="window.print()"
-                class="btn btn-primary">
-
-            <i class="bi bi-printer"></i>
-
-            Print ID Card
-
-        </button>
-
-    </div>
-
-    <div class="d-flex justify-content-center">
-
-        <div class="id-card shadow-lg">
-
-            <!-- Header -->
-
-            <div class="id-header">
-
-                {% if student.college.logo %}
-                    <img src="{{ student.college.logo.url }}"
-                         class="college-logo">
-                {% endif %}
-
-                <h3>{{ student.college.name }}</h3>
-
-                <small>
-
-                    College Code :
-                    {{ student.college.college_code }}
-
-                </small>
-
-                <h5 class="mt-2">
-
-                    STUDENT IDENTITY CARD
-
-                </h5>
-
-            </div>
-
-            <!-- Student Information -->
-
-            <div class="id-body">
-
-                <div class="photo-section">
-
-                    {% if student.photo %}
-
-                    <img src="{{ student.photo.url }}"
-                         class="student-photo">
-
-                    {% else %}
-
-                    <div class="student-placeholder">
-
-                        {{ student.name|slice:":1" }}
-
-                    </div>
-
-                    {% endif %}
-
-                </div>
-
-                <div class="student-details">
-
-                    <table>
-
-                        <tr>
-
-                            <th>Name</th>
-
-                            <td>{{ student.name }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Enrollment</th>
-
-                            <td>{{ student.enrollment_no }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Course</th>
-
-                            <td>{{ student.course }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Department</th>
-
-                            <td>{{ student.department }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Semester</th>
-
-                            <td>{{ student.semester }}</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <th>Email</th>
-
-                            <td>{{ student.email }}</td>
-
-                        </tr>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-            <!-- QR -->
-
-            <div class="text-center mt-4">
-
-                <img src="/media/{{ qr_path }}"
-                     class="qr-code">
-
-                <p>
-
-                    Scan to Verify Student
-
-                </p>
-
-            </div>
-
-            <!-- Footer -->
-
-            <div class="footer">
-
-                <div>
-
-                    ___________________
-
-                    <br>
-
-                    Student Signature
-
-                </div>
-
-                <div>
-
-                    ___________________
-
-                    <br>
-
-                    Principal Signature
-
-                </div>
-
-            </div>
-
-            <div class="college-footer">
-
-                <div>
-
-                    {{ student.college.address }}
-
-                </div>
-
-                <div>
-
-                    {{ student.college.phone }}
-
-                </div>
-
-                <div>
-
-                    {{ student.college.website }}
-
-                </div>
-
-            </div>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .id-card {
+            width: 95mm;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #0A3D62;
+        }
+
+        .id-header {
+            background: #0A3D62;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .college-logo {
+            width: 65px;
+            height: 65px;
+        }
+
+        .id-body {
+            padding: 15px;
+        }
+
+        .id-body-layout,
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .photo-section {
+            width: 35%;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        .student-details {
+            width: 65%;
+            padding-left: 10px;
+            vertical-align: top;
+        }
+
+        .student-photo {
+            width: 105px;
+            height: 105px;
+            border: 2px solid #0A3D62;
+        }
+
+        .student-placeholder {
+            width: 105px;
+            height: 105px;
+            line-height: 105px;
+            background: #dddddd;
+            font-size: 40px;
+            text-align: center;
+        }
+
+        .details-table {
+            font-size: 11px;
+        }
+
+        .details-table th,
+        .details-table td {
+            padding: 4px 0;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .details-table th {
+            width: 42%;
+            color: #0A3D62;
+        }
+
+        .qr-section {
+            text-align: center;
+            padding: 5px 15px 15px;
+        }
+
+        .qr-code {
+            width: 100px;
+            height: 100px;
+        }
+
+        .qr-section p {
+            margin: 4px 0;
+            font-size: 11px;
+        }
+
+        .signatures {
+            width: 100%;
+            border-top: 1px solid #cccccc;
+            padding: 12px 5px;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .signature-cell {
+            width: 50%;
+            display: inline-block;
+        }
+
+        .college-footer {
+            background: #f4f4f4;
+            text-align: center;
+            padding: 8px;
+            font-size: 9px;
+            color: #555555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id-card">
+
+        <div class="id-header">
+            {% if student.college.logo %}
+                <img src="{{ student.college.logo.url }}" class="college-logo">
+            {% endif %}
+
+            <h3>{{ student.college.name }}</h3>
+            <small>College Code: {{ student.college.college_code }}</small>
+            <h4>STUDENT IDENTITY CARD</h4>
+        </div>
+
+        <div class="id-body">
+            <table class="id-body-layout">
+                <tr>
+                    <td class="photo-section">
+                        {% if student.photo %}
+                            <img src="{{ student.photo.url }}" class="student-photo">
+                        {% else %}
+                            <div class="student-placeholder">
+                                {{ student.name|slice:":1" }}
+                            </div>
+                        {% endif %}
+                    </td>
+
+                    <td class="student-details">
+                        <table class="details-table">
+                            <tr><th>Name</th><td>{{ student.name }}</td></tr>
+                            <tr><th>Enrollment</th><td>{{ student.enrollment_no }}</td></tr>
+                            <tr><th>Course</th><td>{{ student.course }}</td></tr>
+                            <tr><th>Department</th><td>{{ student.department }}</td></tr>
+                            <tr><th>Semester</th><td>{{ student.semester }}</td></tr>
+                            <tr><th>Email</th><td>{{ student.email }}</td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="qr-section">
+            <img src="/media/{{ qr_path }}" class="qr-code">
+            <p>Scan to Verify Student</p>
+        </div>
+
+        <div class="signatures">
+            <span class="signature-cell">
+                ___________________<br>
+                Student Signature
+            </span>
+
+            <span class="signature-cell">
+                ___________________<br>
+                Principal Signature
+            </span>
+        </div>
+
+        <div class="college-footer">
+            <div>{{ student.college.address }}</div>
+            <div>{{ student.college.phone }}</div>
+            <div>{{ student.college.website }}</div>
         </div>
 
     </div>
 
-</div>
 
-<style>
+<button type="button" onclick="window.print()" class="btn btn-primary">
+    <i class="bi bi-printer"></i>
+    Print ID Card
+</button>
+    
 
-.id-card{
 
-    width:360px;
 
-    background:white;
-
-    border-radius:18px;
-
-    overflow:hidden;
-
-    border:2px solid #0A3D62;
-
-}
-
-.id-header{
-
-    background:#0A3D62;
-
-    color:white;
-
-    text-align:center;
-
-    padding:20px;
-
-}
-
-.college-logo{
-
-    width:70px;
-
-    margin-bottom:10px;
-
-}
-
-.id-body{
-
-    display:flex;
-
-    padding:20px;
-
-}
-
-.photo-section{
-
-    width:35%;
-
-    text-align:center;
-
-}
-
-.student-photo{
-
-    width:110px;
-
-    height:110px;
-
-    border-radius:10px;
-
-    object-fit:cover;
-
-    border:3px solid #0A3D62;
-
-}
-
-.student-placeholder{
-
-    width:110px;
-
-    height:110px;
-
-    background:#ccc;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-size:40px;
-
-    border-radius:10px;
-
-}
-
-.student-details{
-
-    width:65%;
-
-    padding-left:15px;
-
-}
-
-.student-details table{
-
-    width:100%;
-
-    font-size:13px;
-
-}
-
-.student-details th{
-
-    text-align:left;
-
-    color:#0A3D62;
-
-    width:40%;
-
-}
-
-.student-details td{
-
-    font-weight:600;
-
-}
-
-.qr-code{
-
-    width:120px;
-
-}
-
-.footer{
-
-    display:flex;
-
-    justify-content:space-around;
-
-    margin-top:20px;
-
-    padding:15px;
-
-    border-top:1px solid #ddd;
-
-    font-size:12px;
-
-}
-
-.college-footer{
-
-    background:#f4f4f4;
-
-    text-align:center;
-
-    padding:12px;
-
-    font-size:11px;
-
-    color:#555;
-
-}
-
-@media print{
-
-body *{
-
-visibility:hidden;
-
-}
-
-.id-card,
-.id-card *{
-
-visibility:visible;
-
-}
-
-.id-card{
-
-position:absolute;
-
-left:50%;
-
-top:50%;
-
-transform:translate(-50%,-50%);
-
-box-shadow:none;
-
-}
-
-}
-
-</style>
-
-<div class="text-end mb-3 d-print-none">
-
-    <a href="{% url 'download_id_card' student.id %}"
-       class="btn btn-success">
-
-        <i class="bi bi-download"></i>
-
-        Download PDF
-
-    </a>
-
-    <button onclick="window.print()"
-            class="btn btn-primary">
-
-        <i class="bi bi-printer"></i>
-
-        Print
-
-    </button>
-
-</div>
-
-{% endblock %}
+</body>
+</html>
