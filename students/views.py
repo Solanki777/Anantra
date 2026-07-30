@@ -15,6 +15,7 @@ import pandas as pd
 from .forms import ImportStudentForm
 from .services.excel_import import read_excel_file,validate_excel,import_students_data
 from .services.qr_generator import generate_student_qr
+from .services.pdf_generator import generate_pdf
 
 
 
@@ -370,3 +371,43 @@ def generate_id_card(request, id):
             "qr_path": qr_path,
         },
     )
+
+@login_required
+def download_id_card(request, id):
+
+    student = get_object_or_404(
+        Student,
+        id=id
+    )
+
+    qr_path = generate_student_qr(student)
+
+    context = {
+        "student": student,
+        "qr_path": qr_path,
+    }
+
+    pdf = generate_pdf(
+        "students/id_card.html",
+        context
+    )
+
+    response = HttpResponse(
+        pdf,
+        content_type="application/pdf"
+    )
+    student_name = student.name.replace(" ", "_")
+
+    filename = (
+        f"{student.college.college_code}_"
+        f"{student.enrollment_no}_"
+        f"{student_name}_ID_Card.pdf"
+    )
+
+
+    response = HttpResponse(
+    pdf,
+    content_type="application/pdf"
+)
+
+    return response

@@ -40,4 +40,9 @@ urlpatterns=[
         views.generate_id_card,
         name="generate_id_card",
     ),
+    path(
+    "id-card/<int:id>/download/",
+    views.download_id_card,
+    name="download_id_card",
+),
 ]
