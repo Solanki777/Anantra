@@ -27,3 +27,8 @@ class StudentForm(forms.ModelForm):
                 }
             ),
         }
+
+class ImportStudentForm(forms.Form):
+    excel_file = forms.FileField(
+        label = "Select Excel File"
+    )

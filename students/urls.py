@@ -25,5 +25,9 @@ urlpatterns=[
         views.export_student_csv,
         name="export_student_csv",
     ),
-    
+    path(
+        "import/",
+        views.import_students,
+        name = "import_students",
+    ),
 ]
