@@ -1,4 +1,11 @@
 import pandas as pd
+import re
+
+from django.db import transaction
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
+from ..models import Student
 
 REQUIRED_COLUMNS = [
     "Name",
@@ -168,3 +175,34 @@ def validate_excel(df):
             )
 
     return errors
+
+
+def import_students_data(df, college):
+    """
+    Import validated students into the database.
+    """
+
+    students = []
+
+    for _, row in df.iterrows():
+
+        student = Student(
+            college=college,
+            name=str(row["Name"]).strip(),
+            enrollment_no=str(row["Enrollment No"]).strip(),
+            semester=int(row["Semester"]),
+            email=str(row["Email"]).strip(),
+            mobile=str(row["Mobile"]).strip(),
+            course=str(row["Course"]).strip(),
+            department=str(row["Department"]).strip(),
+            admission_date=pd.to_datetime(
+                row["Admission Date"]
+            ).date(),
+        )
+
+        students.append(student)
+
+    with transaction.atomic():
+        Student.objects.bulk_create(students)
+
+    return len(students)
