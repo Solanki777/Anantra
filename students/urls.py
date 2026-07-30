@@ -34,5 +34,10 @@ urlpatterns=[
     "verify/<str:enrollment_no>/",
     views.verify_student,
     name="verify_student",
-)
+),
+    path(
+        "id-card/<int:id>/",
+        views.generate_id_card,
+        name="generate_id_card",
+    ),
 ]

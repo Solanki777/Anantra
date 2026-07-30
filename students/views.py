@@ -14,6 +14,7 @@ from django.db.models.functions import ExtractMonth
 import pandas as pd
 from .forms import ImportStudentForm
 from .services.excel_import import read_excel_file,validate_excel,import_students_data
+from .services.qr_generator import generate_student_qr
 
 
 
@@ -335,7 +336,7 @@ def import_students(request):
         context
     )
 
-
+@login_required
 def verify_student(request, enrollment_no):
     student = get_object_or_404(
         Student,
@@ -348,4 +349,24 @@ def verify_student(request, enrollment_no):
         {
             "student": student
         }
+    )
+
+@login_required
+def generate_id_card(request, id):
+
+    student = get_object_or_404(
+        Student,
+        id=id,
+        college=request.user.college
+    )
+
+    qr_path = generate_student_qr(student)
+
+    return render(
+        request,
+        "students/id_card.html",
+        {
+            "student": student,
+            "qr_path": qr_path,
+        },
     )

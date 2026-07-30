@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            Student ID Card
+        </div>
+
+        <div class="card-body text-center">
+
+            {% if student.photo %}
+                <img src="{{ student.photo.url }}"
+                     width="150"
+                     class="rounded-circle mb-3">
+            {% endif %}
+
+            <h3>{{ student.name }}</h3>
+
+            <p><strong>Enrollment:</strong> {{ student.enrollment_no }}</p>
+
+            <p><strong>Department:</strong> {{ student.department }}</p>
+
+            <p><strong>Semester:</strong> {{ student.semester }}</p>
+
+            <hr>
+
+            <img
+                src="/media/{{ qr_path }}"
+                width="220"
+                alt="QR Code"
+            >
+
+            <p class="mt-3">
+                Scan to verify student
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
