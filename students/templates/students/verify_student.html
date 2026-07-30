@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            Student Verification
+
+        </div>
+
+        <div class="card-body">
+
+            {% if student.photo %}
+                <img src="{{ student.photo.url }}"
+                     width="150"
+                     class="mb-3">
+            {% endif %}
+
+            <h4>{{ student.name }}</h4>
+
+            <hr>
+
+            <p><strong>Enrollment:</strong> {{ student.enrollment_no }}</p>
+
+            <p><strong>Department:</strong> {{ student.department }}</p>
+
+            <p><strong>Course:</strong> {{ student.course }}</p>
+
+            <p><strong>Semester:</strong> {{ student.semester }}</p>
+
+            <p><strong>Email:</strong> {{ student.email }}</p>
+
+            <p><strong>Mobile:</strong> {{ student.mobile }}</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -24,7 +24,7 @@ def read_excel_file(excel_file):
     if file_name.endswith(".xlsx"):
         return pd.read_excel(excel_file, engine="openpyxl")
     elif file_name.endswith(".xls"):
-        return pd.read_excel(excel_file, engine="xlrd")
+        return pd.read_ewexcel(excel_file, engine="xlrd")
     else:
         raise ValueError("Only .xlsx and .xls files are supported.")
 

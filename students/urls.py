@@ -30,4 +30,9 @@ urlpatterns=[
         views.import_students,
         name = "import_students",
     ),
+    path(
+    "verify/<str:enrollment_no>/",
+    views.verify_student,
+    name="verify_student",
+)
 ]

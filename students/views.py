@@ -334,3 +334,18 @@ def import_students(request):
         "students/import_students.html",
         context
     )
+
+
+def verify_student(request, enrollment_no):
+    student = get_object_or_404(
+        Student,
+        enrollment_no=enrollment_no
+    )
+
+    return render(
+        request,
+        "students/verify_student.html",
+        {
+            "student": student
+        }
+    )
