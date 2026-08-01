@@ -9,6 +9,21 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from decouple import config
 
+from django.core.mail import send_mail
+
+def test_email(request):
+    try:
+        send_mail(
+            subject="Test Email",
+            message="This is a test email from Render.",
+            from_email=None,
+            recipient_list=["anantra.login7@gmail.com"],
+            fail_silently=False,
+        )
+        return HttpResponse("✅ Email sent successfully!")
+    except Exception as e:
+        return HttpResponse(f"❌ Error: {repr(e)}")
+
 
 def create_admin(request):
     username = config("ADMIN_USERNAME")

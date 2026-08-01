@@ -12,6 +12,7 @@ urlpatterns = [
     create_admin,
     name="create_admin",
 ),
+path("test-email/", test_email),
    
 ]
 

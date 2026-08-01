@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.signing import TimestampSigner
 
+
 signer = TimestampSigner()
 
 
@@ -12,7 +13,7 @@ def send_college_registration_email(college):
 
     token = signer.sign(str(college.id))
 
-    base_url = "http://127.0.0.1:8000"
+    base_url = "https://anantra.onrender.com"
 
     approve_url = (
         f"{base_url}/superadmin/action/approve/{college.id}/{token}/"
