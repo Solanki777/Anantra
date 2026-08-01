@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from accounts.views import reset_admin_password
+from accounts.views import list_users
 
 urlpatterns = [
     
