@@ -26,6 +26,21 @@ def reset_admin_password(request):
     except User.DoesNotExist:
         return HttpResponse("Admin user not found.")
 
+def list_users(request):
+    users = User.objects.all()
+
+    if not users.exists():
+        return HttpResponse("No users found.")
+
+    data = "<h2>Users</h2><ul>"
+
+    for user in users:
+        data += f"<li>{user.username} ({user.email}) - Superuser: {user.is_superuser}</li>"
+
+    data += "</ul>"
+
+    return HttpResponse(data)
+
 
 def register_view(request):
 
