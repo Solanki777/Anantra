@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import create_admin,test_email
+from .views import create_admin,test_smtp
 
 urlpatterns = [
     
@@ -12,7 +12,6 @@ urlpatterns = [
     create_admin,
     name="create_admin",
 ),
-path("test-email/", test_email),
-   
+path("test-smtp/", test_smtp),
 ]
 

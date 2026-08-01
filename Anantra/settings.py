@@ -52,6 +52,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "Anantra.urls"
+EMAIL_TIMEOUT = 30
 
 TEMPLATES = [
     {

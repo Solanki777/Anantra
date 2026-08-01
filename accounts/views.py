@@ -10,20 +10,15 @@ from django.http import HttpResponse
 from decouple import config
 
 from django.core.mail import send_mail
+import socket
+from django.http import HttpResponse
 
-def test_email(request):
+def test_smtp(request):
     try:
-        send_mail(
-            subject="Test Email",
-            message="This is a test email from Render.",
-            from_email=None,
-            recipient_list=["anantra.login7@gmail.com"],
-            fail_silently=False,
-        )
-        return HttpResponse("✅ Email sent successfully!")
+        socket.create_connection(("smtp.gmail.com", 587), timeout=10)
+        return HttpResponse("✅ SMTP connection successful")
     except Exception as e:
-        return HttpResponse(f"❌ Error: {repr(e)}")
-
+        return HttpResponse(f"❌ SMTP connection failed: {repr(e)}")
 
 def create_admin(request):
     username = config("ADMIN_USERNAME")
