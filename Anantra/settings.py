@@ -43,24 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-        "OPTIONS": {
-            "min_length": 8,
-        },
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-PASSWORD_RESET_TIMEOUT = 300
+PASSWORD_RESET_TIMEOUT = 360
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -112,6 +95,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 8,
+        },
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
@@ -120,8 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
