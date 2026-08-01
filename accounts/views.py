@@ -8,39 +8,22 @@ from colleges.emails import send_college_registration_email
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
-def reset_admin_password(request):
-    try:
-        user = User.objects.get(username="admin")  # Change if your username is different
 
-        new_password = "Admin@123456789"  # Choose your own strong password
+def create_admin(request):
+    username = config("ADMIN_USERNAME")
+    email = config("ADMIN_EMAIL")
+    password = config("ADMIN_PASSWORD")
 
-        user.set_password(new_password)
-        user.save()
+    if User.objects.filter(username=username).exists():
+        return HttpResponse("✅ Admin already exists.")
 
-        return HttpResponse(
-            f"Admin password changed successfully.<br>"
-            f"Username: {user.username}<br>"
-            f"Password: {new_password}"
-        )
+    User.objects.create_superuser(
+        username=username,
+        email=email,
+        password=password,
+    )
 
-    except User.DoesNotExist:
-        return HttpResponse("Admin user not found.")
-
-def list_users(request):
-    users = User.objects.all()
-
-    if not users.exists():
-        return HttpResponse("No users found.")
-
-    data = "<h2>Users</h2><ul>"
-
-    for user in users:
-        data += f"<li>{user.username} ({user.email}) - Superuser: {user.is_superuser}</li>"
-
-    data += "</ul>"
-
-    return HttpResponse(data)
-
+    return HttpResponse("✅ Admin created successfully.")
 
 def register_view(request):
 
