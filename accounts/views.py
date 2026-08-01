@@ -5,6 +5,27 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from colleges.emails import send_college_registration_email
 
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+def reset_admin_password(request):
+    try:
+        user = User.objects.get(username="admin")  # Change if your username is different
+
+        new_password = "Admin@123456789"  # Choose your own strong password
+
+        user.set_password(new_password)
+        user.save()
+
+        return HttpResponse(
+            f"Admin password changed successfully.<br>"
+            f"Username: {user.username}<br>"
+            f"Password: {new_password}"
+        )
+
+    except User.DoesNotExist:
+        return HttpResponse("Admin user not found.")
+
 
 def register_view(request):
 
