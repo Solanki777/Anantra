@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import create_admin
+from .views import create_admin,test_email
 
 urlpatterns = [
     
