@@ -7,6 +7,7 @@ from colleges.emails import send_college_registration_email
 
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from decouple import config
 
 
 def create_admin(request):
