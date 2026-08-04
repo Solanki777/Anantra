@@ -193,7 +193,7 @@ def edit_student(request, id):
         form =StudentForm(request.POST, request.FILES , instance=student)
 
         if form.is_valid():
-            if "photo" is request.FILES and old_photo:
+            if "photo" in request.FILES and old_photo:
                 old_photo.delete(save=False)
             form.save()
 
@@ -218,7 +218,11 @@ def edit_student(request, id):
 
 @login_required
 def delete_student(request, id):
-    student = get_object_or_404(Student, id=id , college = request.user.college )
+    student = get_object_or_404(
+    Student,
+    id=id,
+    college=request.user.college,
+)
     if request.method == "POST":
         if student.photo:
             student.photo.delete(save=False)
