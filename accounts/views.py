@@ -13,6 +13,10 @@ from django.core.mail import send_mail
 import socket
 from django.http import HttpResponse
 
+def csrf_failure(request,reason=""):
+    return render(request,"csrf_error.html",status=403)
+
+
 def test_smtp(request):
     try:
         socket.create_connection(("smtp.gmail.com", 587), timeout=10)

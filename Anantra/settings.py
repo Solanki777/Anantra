@@ -51,6 +51,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CSRF_FAILURE_VIEW = "accounts.views.csrf_failure"
 ROOT_URLCONF = "Anantra.urls"
 EMAIL_TIMEOUT = 30
 

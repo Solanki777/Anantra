@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
+from accounts.views import csrf_failure
 
 
 urlpatterns = [
@@ -45,6 +46,9 @@ urlpatterns = [
             template_name = "accounts/password_reset_complete.html"
         ),
         name = "password_reset_complete"
+    ),
+    path(
+        "csrf-error/", csrf_failure,name = "csrf_error"
     ),
     
 
