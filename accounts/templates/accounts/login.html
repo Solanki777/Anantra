@@ -132,9 +132,26 @@
                         <a href="{% url 'register' %}">Register</a>
                     </p>
                 </form>
-                <a href="{% url 'password_reset' %}">
-                    Forgot Password?
-                </a>
+                <!-- Forgot Password + Contact Us -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <!-- Forgot Password -->
+                    <a href="{% url 'password_reset' %}">
+                        Forgot Password?
+                    </a>
+
+                    <!-- Contact Us -->
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anantra.login7@gmail.com"
+                    target="_blank"
+                    class="text-decoration-none">
+                        <i class="bi bi-envelope me-1"></i>
+                        Contact Us
+                    </a>
+
+                </div>
+
+                
+                
 
             </article>
 
