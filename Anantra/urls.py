@@ -51,10 +51,6 @@ urlpatterns = [
         "csrf-error/", csrf_failure,name = "csrf_error"
     ),
     
-
-   
-
-
 ]
 
 if settings.DEBUG :

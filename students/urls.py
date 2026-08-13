@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns=[
     path("dashboard/",views.dashboard,name="dashboard"),
@@ -45,4 +47,11 @@ urlpatterns=[
     views.download_id_card,
     name="download_id_card",
 ),
+path(
+    "qr/<int:id>/",
+    views.generate_student_qr_view,
+    name="generate_student_qr",
+),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

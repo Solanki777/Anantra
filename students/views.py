@@ -11,13 +11,31 @@ from django.http import HttpResponse
 from django.db.models import Count
 import json
 from django.db.models.functions import ExtractMonth
+from django.http import FileResponse
 import pandas as pd
 from .forms import ImportStudentForm
 from .services.excel_import import read_excel_file,validate_excel,import_students_data
 from .services.qr_generator import generate_student_qr
 from .services.pdf_generator import generate_pdf
+import os
+from django.conf import settings
 
 
+def generate_student_qr_view(request, id):
+    student = get_object_or_404(Student, id=id)
+
+    qr_path = generate_student_qr(student)
+
+    full_path = os.path.join(
+        settings.MEDIA_ROOT,
+        qr_path
+    )
+
+    return FileResponse(
+        open(full_path, "rb"),
+        as_attachment=True,
+        filename=f"{student.enrollment_no}_QR.png"
+    )
 
 # Create your views here.
 def home(request):
@@ -361,8 +379,7 @@ def generate_id_card(request, id):
 
     student = get_object_or_404(
         Student,
-        id=id,
-        college=request.user.college
+        id=id
     )
 
     qr_path = generate_student_qr(student)
@@ -373,7 +390,7 @@ def generate_id_card(request, id):
         {
             "student": student,
             "qr_path": qr_path,
-        },
+        }
     )
 
 @login_required 

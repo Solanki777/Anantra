@@ -167,8 +167,19 @@
         </div>
 
         <div class="qr-section">
-            <img src="/media/{{ qr_path }}" class="qr-code">
+
+            {% if qr_path %}
+                <img
+                    src="/media/{{ qr_path }}"
+                    alt="Student QR Code"
+                    class="qr-code"
+                >
+            {% else %}
+                <p>QR Code not available</p>
+            {% endif %}
+
             <p>Scan to Verify Student</p>
+
         </div>
 
         <div class="signatures">

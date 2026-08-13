@@ -137,10 +137,17 @@ active
             <td class="text-center">
               <div class="d-flex justify-content-center gap-2">
                 <a href="{% url 'generate_id_card' student.id %}"
-                  class="btn btn-success btn-sm">
-                    <i class="bi bi-person-badge"></i>
-                    ID Card Preview
-                </a>
+                class="btn btn-success btn-sm">
+                  <i class="bi bi-person-badge"></i>
+                  ID Card
+              </a>
+
+              <a href="{% url 'generate_student_qr' student.id %}"
+                class="btn btn-dark btn-sm"
+                aria-label="Generate QR code for {{ student.name }}">
+                  <i class="bi bi-qr-code"></i>
+                  QR
+              </a>
                 
                 <a
                   href="{% url 'show_details' student.id %}"
