@@ -359,7 +359,6 @@ def import_students(request):
         context
     )
 
-@login_required
 def verify_student(request, enrollment_no):
     student = get_object_or_404(
         Student,
