@@ -158,4 +158,30 @@
         </div>
     </section>
 
+    <script>
+        // ============ ALERT DISMISS (no Bootstrap JS dependency) ============
+        function dismissAlert(alertEl) {
+            if (!alertEl || alertEl.dataset.dismissed) return;
+            alertEl.dataset.dismissed = 'true';
+            alertEl.style.transition = 'opacity .15s linear';
+            alertEl.style.opacity = '0';
+            setTimeout(function () {
+                alertEl.remove();
+            }, 150);
+        }
+
+        document.querySelectorAll('.alert').forEach(function (alert) {
+            const closeBtn = alert.querySelector('.btn-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function () {
+                    dismissAlert(alert);
+                });
+            }
+            // Auto-dismiss after 5 seconds
+            setTimeout(function () {
+                dismissAlert(alert);
+            }, 5000);
+        });
+    </script>
+
 {% endblock %}
